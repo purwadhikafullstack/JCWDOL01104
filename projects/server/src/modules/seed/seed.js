@@ -11,7 +11,7 @@ const category = new Categories();
 
 const seed = tryCacth(async (req, res) => {
   const roleData = [{ role: "user" }, { role: "tenant" }];
-  const categoryData = [{ name: "villa" }, { name: "hotel" }, { name: "apartement" }];
+  const categoryData = [{ category: "villa" }, { category: "hotel" }, { category: "apartement" }];
   const checkRole = await role.findManyRole();
   if (checkRole.length !== 0) throw new AppError("You Have Create Seed, Please Check Your Database!", 400);
   await role.insertManyRole(roleData);
