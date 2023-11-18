@@ -24,6 +24,12 @@ const getUserByEmail = tryCatch(async (req, res) => {
   return utils.responseSuccess(res, response);
 });
 
+const getUserByEmailOrPhoneNumber = tryCatch(async (req, res) => {
+  const params = req.params.emailOrPhoneNumber;
+  const response = await query.getUserByEmailOrPhoneNumber(params);
+  return utils.responseSuccess(res, response);
+});
+
 const register = tryCatch(async (req, res) => {
   const payload = req.body;
   await utils.validateSchema(payload, schema.register);
@@ -31,4 +37,11 @@ const register = tryCatch(async (req, res) => {
   return utils.responseSuccess(res, response, "Success Register", 201);
 });
 
-export default { getUsers, getUserById, getUserByEmail, register };
+const login = tryCatch(async (req, res) => {
+  const payload = req.body;
+  await utils.validateSchema(payload, schema.login);
+  const response = await command.login(payload);
+  return utils.responseSuccess(res, response, "Success Login");
+});
+
+export default { getUsers, getUserById, getUserByEmail, getUserByEmailOrPhoneNumber, register, login };

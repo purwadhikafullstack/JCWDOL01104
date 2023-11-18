@@ -1,7 +1,12 @@
 import joi from "joi";
 
 const register = joi.object({
-  name: joi.string().min(3).max(50).required(),
+  name: joi
+    .string()
+    .min(3)
+    .max(50)
+    .regex(/^[A-Za-z '.]+$/)
+    .required(),
   email: joi
     .string()
     .min(3)
@@ -13,5 +18,14 @@ const register = joi.object({
   role: joi.string().valid("user", "tenant"),
 });
 
-const schema = { register };
+const login = joi.object({
+  emailOrPhoneNumber: joi
+    .string()
+    .min(3)
+    .max(50)
+    .regex(/^[0-9A-Za-z@'.]+$/),
+  password: joi.string().min(6).max(16).required(),
+});
+
+const schema = { register, login };
 export default schema;

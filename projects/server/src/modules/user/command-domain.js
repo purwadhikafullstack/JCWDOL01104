@@ -20,16 +20,25 @@ export default class CommandUser {
       email: email,
       image_url: picture,
       email_verified: email_verified,
-      role: findRole.dataValues.id,
+      roleId: findRole.dataValues.id,
     };
     const getUser = await this.query.getUserByEmail(email);
-    if (!getUser) return await this.user.insertOneUser(data);
+    if (!getUser) {
+      const dataUser = {
+        name: name,
+        image_url: picture,
+        role: findRole.dataValues.role,
+      };
+      const token = jwt.sign(dataUser, process.env.SECRET_KEY, { expiresIn: "30d" });
+      await this.user.insertOneUser(data);
+      return token;
+    }
     if (getUser) {
       const userData = getUser.dataValues;
       const dataUser = {
         id: userData.id,
         image_url: userData.image_url,
-        role: userData.role,
+        role: userData.role.role,
       };
       const token = jwt.sign(dataUser, process.env.SECRET_KEY, { expiresIn: "30d" });
       const link = `${process.env.CLIENT_LINK}/auth?token=${token}`;
@@ -55,7 +64,18 @@ export default class CommandUser {
       roleId: findRole.dataValues.id,
     };
     const checkUser = await this.query.getUserByEmail(email);
-    if (checkUser) throw new AppError("Email has Already", 400);
+    if (checkUser) throw new AppError("Email sudah digunakan", 400);
     await this.user.insertOneUser(data);
+  }
+
+  async login(payload) {
+    const { emailOrPhoneNumber, password } = payload;
+    const getUser = await this.query.getUserByEmailOrPhoneNumber(emailOrPhoneNumber);
+    if (!getUser.password) throw new AppError("Password tidak valid, silakan reset password", 400);
+    const checkPwd = await bcrypt.compareHash(password, getUser.password);
+    if (!checkPwd) throw new AppError("Email atau password tidak sesui", 403);
+    const data = { id: getUser.id, image_url: getUser.image_url, role: getUser.role.role };
+    const token = jwt.sign(data, process.env.SECRET_KEY, { expiresIn: "30d" });
+    return token;
   }
 }
