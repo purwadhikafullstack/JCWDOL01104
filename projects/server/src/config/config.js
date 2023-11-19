@@ -1,6 +1,7 @@
 import "dotenv/config";
 
 const { DB_PASSWORD, DB_USER, DB_NAME, DB_HOST, DB_PORT, DB_DIALECT } = process.env;
+
 export const sessionConfig = { secret: "Our little secret.", resave: false, saveUninitialized: false };
 export const corsConfig = {
   origin: [process.env.CLIENT_LINK, process.env.SERVER_LINK],
