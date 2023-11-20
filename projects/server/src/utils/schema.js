@@ -27,5 +27,24 @@ const login = joi.object({
   password: joi.string().min(6).max(16).required(),
 });
 
-const schema = { register, login };
+const otpRequest = joi.object({
+  email: joi
+    .string()
+    .min(3)
+    .max(50)
+    .email({ minDomainSegments: 2, tlds: { allow: ["com", "me", "net"] } })
+    .required(),
+});
+
+const verifyEmail = joi.object({
+  email: joi
+    .string()
+    .min(3)
+    .max(50)
+    .email({ minDomainSegments: 2, tlds: { allow: ["com", "me", "net"] } })
+    .required(),
+  otp: joi.string().min(6).max(6).required(),
+});
+
+const schema = { register, login, otpRequest, verifyEmail };
 export default schema;

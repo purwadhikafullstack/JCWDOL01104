@@ -13,7 +13,7 @@ export default class QueryUser {
   }
 
   async getUserById(userId) {
-    const params = { id: userId };
+    const params = { where: { id: userId } };
     const data = await this.user.findOneUser(params);
     return data;
   }

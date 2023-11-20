@@ -1,13 +1,18 @@
+import { Op } from "sequelize";
 import jwt from "jsonwebtoken";
 import Users from "./repositories.js";
 import QueryUser from "./query-domain.js";
 import AppError from "./../../utils/app-error.js";
 import bcrypt from "../../helpers/bcrypt.js";
+import mailer from "../../helpers/mailer.js";
 import Role from "../role/repositories.js";
+import otpGenerator from "otp-generator";
+import Otps from "../../modules/otp/reposotories.js";
 
 export default class CommandUser {
   constructor() {
     this.role = new Role();
+    this.otp = new Otps();
     this.user = new Users();
     this.query = new QueryUser();
   }
@@ -77,5 +82,27 @@ export default class CommandUser {
     const data = { id: getUser.id, image_url: getUser.image_url, role: getUser.role.role };
     const token = jwt.sign(data, process.env.SECRET_KEY, { expiresIn: "30d" });
     return token;
+  }
+
+  async requestOtp(payload) {
+    const { email } = payload;
+    const getOtp = await this.otp.findOneOtp({ where: { email: email } });
+    const otp = otpGenerator.generate(6, { lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false });
+    if (!getOtp) await this.otp.inserOnetOtp({ email: email, otp: otp });
+    if (getOtp && getOtp.dataValues.otpExpired < Date.now()) {
+      await this.otp.deleteOnetOtp({ where: { email: email } });
+      throw new AppError("Otp tidak berlaku", 403);
+    }
+    if (getOtp) await this.otp.updateOnetOtp({ otp: otp }, { where: { email: email } });
+    mailer.verifyEmail(email, otp);
+  }
+
+  async verifyEmail(payload) {
+    const { email, otp } = payload;
+    const getOtp = await this.otp.findOneOtp({ where: { [Op.and]: [{ email: email }, { otp: otp }] } });
+    if (!getOtp) throw new AppError("Otp tidak valid", 403);
+    const updateData = { email_verified: true };
+    await this.user.updateOneUser(updateData, { where: { email: email } });
+    await this.otp.deleteOnetOtp({ where: { [Op.and]: [{ email: email }, { otp: otp }] } });
   }
 }
