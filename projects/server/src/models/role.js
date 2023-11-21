@@ -1,11 +1,11 @@
-import sequelize from "../config/db";
+import sequelize from "../config/db.js";
 import { DataTypes } from "sequelize";
 
 const Role = sequelize.define(
   "role",
   {
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-    name: { type: DataTypes.STRING },
+    role: { type: DataTypes.STRING },
   },
   { timestamps: false }
 );
