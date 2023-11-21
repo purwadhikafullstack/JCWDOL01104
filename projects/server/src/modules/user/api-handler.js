@@ -44,4 +44,27 @@ const login = tryCatch(async (req, res) => {
   return utils.responseSuccess(res, response, "Success Login");
 });
 
-export default { getUsers, getUserById, getUserByEmail, getUserByEmailOrPhoneNumber, register, login };
+const requestOtp = tryCatch(async (req, res) => {
+  const payload = req.body;
+  await utils.validateSchema(payload, schema.otpRequest);
+  const response = await command.requestOtp(payload);
+  return utils.responseSuccess(res, response);
+});
+
+const verifyEmail = tryCatch(async (req, res) => {
+  const payload = req.body;
+  await utils.validateSchema(payload, schema.verifyEmail);
+  const response = await command.verifyEmail(payload);
+  return utils.responseSuccess(res, response);
+});
+
+export default {
+  getUsers,
+  getUserById,
+  getUserByEmail,
+  getUserByEmailOrPhoneNumber,
+  register,
+  login,
+  requestOtp,
+  verifyEmail,
+};
