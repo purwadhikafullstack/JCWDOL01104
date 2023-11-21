@@ -32,10 +32,4 @@ app.use("/auth", routes.authRoutes);
 app.use(errorHandler);
 app.use(notFound);
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(morgan("dev"));
-app.use(cors());
-app.use(helmet());
-
 app.listen(PORT, () => console.log(`Server is Running on PORT:${PORT}`));
