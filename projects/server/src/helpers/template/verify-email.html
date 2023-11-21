@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Received OTP</title>
+    <style>
+      /* Add your CSS styles here */
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      .container {
+        text-align: center;
+      }
+      .otp-code {
+        font-size: 32px;
+        margin-bottom: 20px;
+        font-weight: 900;
+        letter-spacing: 8px;
+        color: #f4f4f4;
+        margin: auto;
+      }
+      .otp-container {
+        background-color: darkslategrey;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" id="otpContainer">
+      <h2>Kode OTP</h2>
+      <p>Jangan beritahukan kode OTP ini kepada siapapun karena bersifat rahasia</p>
+      <p>Kode OTP Anda:</p>
+      <div class="otp-container">
+        <p class="otp-code">{{otp}}</p>
+      </div>
+    </div>
+  </body>
+</html>
