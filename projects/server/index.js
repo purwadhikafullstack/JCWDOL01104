@@ -11,8 +11,6 @@ import errorHandler from "./src/utils/error-handler.js";
 import notFound from "./src/utils/not-found.js";
 import passportConfig from "./src/modules/auth/passport.js";
 import routes from "./src/routes/index.js";
-import { connetionMysql } from "./src/config/db.js";
-
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -34,12 +32,10 @@ app.use("/auth", routes.authRoutes);
 app.use(errorHandler);
 app.use(notFound);
 
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(morgan("dev"));
 app.use(cors());
 app.use(helmet());
-
 
 app.listen(PORT, () => console.log(`Server is Running on PORT:${PORT}`));
