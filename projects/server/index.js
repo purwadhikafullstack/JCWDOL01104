@@ -4,6 +4,7 @@ import cors from "cors";
 import helmet from "helmet";
 import passport from "passport";
 import session from "express-session";
+import propertyRoutes from "../server/src/routers/property.router.js"
 
 import { connetionMysql } from "./src/config/db.js";
 import { corsConfig, sessionConfig } from "./src/config/config.js";
@@ -25,11 +26,24 @@ app.use(morgan("dev"));
 app.use(helmet());
 app.use(session(sessionConfig));
 
+app.use ("/api/propertyList",propertyRoutes);
 app.use("/api/secret/seed", routes.seedRoutes);
 app.use("/api/user", routes.userRoutes);
 app.use("/auth", routes.authRoutes);
 
 app.use(errorHandler);
 app.use(notFound);
+
+
+
+
+
+
+
+// app.use("/api/productListData", productRoutes);
+
+
+
+console.log("helo")
 
 app.listen(PORT, () => console.log(`Server is Running on PORT:${PORT}`));
