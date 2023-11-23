@@ -46,5 +46,23 @@ const verifyEmail = joi.object({
   otp: joi.string().min(6).max(6).required(),
 });
 
-const schema = { register, login, otpRequest, verifyEmail };
+const updatePassword = joi.object({
+  oldPassword: joi.string().min(6).max(16).required(),
+  newPassword: joi
+    .string()
+    .min(6)
+    .max(16)
+    .disallow(joi.ref("oldPassword"))
+    .required()
+    .messages({ "any.base": "does not match" }),
+  confirmPassword: joi
+    .any()
+    .equal(joi.ref("newPassword"))
+    .required()
+    .label("Confirm password")
+    .options({ messages: { "any.only": "{{#label}} does not match" } }),
+  userId: joi.string().required(),
+});
+
+const schema = { register, login, otpRequest, verifyEmail, updatePassword };
 export default schema;
