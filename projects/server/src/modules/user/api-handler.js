@@ -58,6 +58,13 @@ const verifyEmail = tryCatch(async (req, res) => {
   return utils.responseSuccess(res, response);
 });
 
+const updatePassword = tryCatch(async (req, res) => {
+  const payload = req.body;
+  await utils.validateSchema(payload, schema.updatePassword);
+  const response = await command.updatePassword(payload);
+  return utils.responseSuccess(res, response);
+});
+
 export default {
   getUsers,
   getUserById,
@@ -67,4 +74,5 @@ export default {
   login,
   requestOtp,
   verifyEmail,
+  updatePassword,
 };

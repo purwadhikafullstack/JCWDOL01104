@@ -105,4 +105,20 @@ export default class CommandUser {
     await this.user.updateOneUser(updateData, { where: { email: email } });
     await this.otp.deleteOnetOtp({ where: { [Op.and]: [{ email: email }, { otp: otp }] } });
   }
+
+  async updatePassword(payload) {
+    const { oldPassword, newPassword, confirmPassword, userId } = payload;
+    const getUser = await this.query.getUserById(userId);
+    if (!getUser) throw new AppError("User not found", 403);
+    const checkPwd = await bcrypt.compareHash(oldPassword, getUser.dataValues.password);
+    if (!checkPwd) throw new AppError("Password isn't valid", 403);
+    if (!newPassword || !confirmPassword) throw new AppError("Field are require");
+    if (newPassword && confirmPassword) {
+      if (newPassword !== confirmPassword) throw new AppError("Password must match", 403);
+      const pwd = await bcrypt.generateHash(newPassword);
+      const updateData = { password: pwd };
+      const params = { where: { id: userId } };
+      await this.user.updateOneUser(updateData, params);
+    }
+  }
 }
