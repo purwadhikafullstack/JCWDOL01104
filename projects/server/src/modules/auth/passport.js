@@ -27,28 +27,28 @@ export default (passport) => {
     )
   );
 
-  passport.use(
-    new FacebookStrategy(
-      {
-        clientID: process.env.FACEBOOK_CLIENT_ID,
-        clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-        callbackURL: `/auth/facebook/oauth`,
-        // scope: ["profile", "email"],
-      },
-      async function (accessToken, refreshToken, profile, callback) {
-        console.log("profile");
-        console.log(accessToken);
-        console.log(profile);
-        const params = { where: { googleId: profile.id }, default: { googleId: profile.id } };
-        // const result = await user.findOrCreateUser(params);
-        // console.log("result", result);
-        // User.findOrCreate({ googleId: profile.id }, function (err, user) {
-        //   return cb(err, user);
-        // });
-        callback(null, profile);
-      }
-    )
-  );
+  // passport.use(
+  //   new FacebookStrategy(
+  //     {
+  //       clientID: process.env.FACEBOOK_CLIENT_ID,
+  //       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+  //       callbackURL: `/auth/facebook/oauth`,
+  //       // scope: ["profile", "email"],
+  //     },
+  //     async function (accessToken, refreshToken, profile, callback) {
+  //       console.log("profile");
+  //       console.log(accessToken);
+  //       console.log(profile);
+  //       const params = { where: { googleId: profile.id }, default: { googleId: profile.id } };
+  //       // const result = await user.findOrCreateUser(params);
+  //       // console.log("result", result);
+  //       // User.findOrCreate({ googleId: profile.id }, function (err, user) {
+  //       //   return cb(err, user);
+  //       // });
+  //       callback(null, profile);
+  //     }
+  //   )
+  // );
 
   passport.serializeUser((user, done) => {
     done(null, user);
