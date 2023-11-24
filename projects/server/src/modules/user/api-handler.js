@@ -65,6 +65,20 @@ const updatePassword = tryCatch(async (req, res) => {
   return utils.responseSuccess(res, response);
 });
 
+const resetPassword = tryCatch(async (req, res) => {
+  const payload = req.body;
+  await utils.validateSchema(payload, schema.emailSchema);
+  const response = await command.resetPassword(payload);
+  return utils.responseSuccess(res, response);
+});
+
+const updateResetPassword = tryCatch(async (req, res) => {
+  const payload = req.body;
+  await utils.validateSchema(payload, schema.resetPasswordSchema);
+  const response = await command.updateResetPassword(payload);
+  return utils.responseSuccess(res, response);
+});
+
 export default {
   getUsers,
   getUserById,
@@ -75,4 +89,6 @@ export default {
   requestOtp,
   verifyEmail,
   updatePassword,
+  resetPassword,
+  updateResetPassword,
 };
