@@ -23,5 +23,7 @@ router.post("/otp/request", rateLimit, userHandler.requestOtp);
 router.post("/verify-email", jwtAuth, userHandler.verifyEmail);
 
 router.post("/update-password", jwtAuth, userHandler.updatePassword);
+router.post("/reset-password/request", userHandler.resetPassword);
+router.post("/reset-password", userHandler.updateResetPassword);
 
 export default router;
