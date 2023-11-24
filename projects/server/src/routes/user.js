@@ -26,4 +26,6 @@ router.post("/update-password", jwtAuth, userHandler.updatePassword);
 router.post("/reset-password/request", userHandler.resetPassword);
 router.post("/reset-password", userHandler.updateResetPassword);
 
+router.put("/:userId", jwtAuth, userHandler.updateUser);
+
 export default router;

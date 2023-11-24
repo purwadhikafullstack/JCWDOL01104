@@ -67,15 +67,23 @@ const updatePassword = tryCatch(async (req, res) => {
 
 const resetPassword = tryCatch(async (req, res) => {
   const payload = req.body;
-  await utils.validateSchema(payload, schema.emailSchema);
+  await utils.validateSchema(payload, schema.email);
   const response = await command.resetPassword(payload);
   return utils.responseSuccess(res, response);
 });
 
 const updateResetPassword = tryCatch(async (req, res) => {
   const payload = req.body;
-  await utils.validateSchema(payload, schema.resetPasswordSchema);
+  await utils.validateSchema(payload, schema.resetPassword);
   const response = await command.updateResetPassword(payload);
+  return utils.responseSuccess(res, response);
+});
+
+const updateUser = tryCatch(async (req, res) => {
+  const params = req.params.userId;
+  const payload = req.body;
+  await utils.validateSchema(payload, schema.updateUser);
+  const response = await command.updateUser(payload, params);
   return utils.responseSuccess(res, response);
 });
 
@@ -91,4 +99,5 @@ export default {
   updatePassword,
   resetPassword,
   updateResetPassword,
+  updateUser,
 };
