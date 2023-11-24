@@ -148,4 +148,30 @@ export default class CommandUser {
       await this.user.updateOneUser(updateData, params);
     }
   }
+
+  async updateUser(payload, userId) {
+    const { name, email, gender, birthdate } = payload;
+    const getUser = await this.query.getUserById(userId);
+    if (!getUser) throw new AppError("User not found", 403);
+    if (email) {
+      const checkUser = await this.query.getUserByEmail(email);
+      if (checkUser) throw new AppError("Email Telah Digunakan", 403);
+    }
+    const userData = getUser.dataValues;
+    let updateData = {};
+    if (userData && userData.name !== name) {
+      updateData.name = name;
+    }
+    if (userData && userData.email !== email) {
+      updateData.email = email;
+    }
+    if (userData && userData.gender !== gender) {
+      updateData.gender = gender;
+    }
+    if (userData && userData.birthdate !== birthdate) {
+      updateData.birthdate = birthdate;
+    }
+
+    await this.user.updateOneUser(updateData, { where: { id: userId } });
+  }
 }

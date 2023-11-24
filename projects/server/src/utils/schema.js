@@ -64,7 +64,7 @@ const updatePassword = joi.object({
   userId: joi.string().required(),
 });
 
-const emailSchema = joi.object({
+const email = joi.object({
   email: joi
     .string()
     .min(3)
@@ -73,7 +73,7 @@ const emailSchema = joi.object({
     .required(),
 });
 
-const resetPasswordSchema = joi.object({
+const resetPassword = joi.object({
   newPassword: joi.string().min(6).max(16).required(),
   confirmPassword: joi
     .any()
@@ -85,5 +85,22 @@ const resetPasswordSchema = joi.object({
   userId: joi.string().required(),
 });
 
-const schema = { register, login, otpRequest, verifyEmail, updatePassword, emailSchema, resetPasswordSchema };
+const updateUser = joi.object({
+  name: joi
+    .string()
+    .min(3)
+    .max(50)
+    .regex(/^[A-Za-z '.]+$/)
+    .allow(),
+  email: joi
+    .string()
+    .min(3)
+    .max(50)
+    .email({ minDomainSegments: 2, tlds: { allow: ["com", "me", "net"] } })
+    .allow(),
+  gender: joi.string().valid("male", "female").allow(),
+  birthdate: joi.number().allow(),
+});
+
+const schema = { register, login, otpRequest, verifyEmail, updatePassword, email, resetPassword, updateUser };
 export default schema;
