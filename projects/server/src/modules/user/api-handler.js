@@ -87,6 +87,14 @@ const updateUser = tryCatch(async (req, res) => {
   return utils.responseSuccess(res, response);
 });
 
+const uploadImage = tryCatch(async (req, res) => {
+  const params = req.params.userId;
+  console.log("req", req.headers);
+  const file = req.file;
+  const response = await command.uploadImage(file, params);
+  return utils.responseSuccess(res, response);
+});
+
 export default {
   getUsers,
   getUserById,
@@ -100,4 +108,5 @@ export default {
   resetPassword,
   updateResetPassword,
   updateUser,
+  uploadImage,
 };
