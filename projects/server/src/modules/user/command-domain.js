@@ -177,7 +177,6 @@ export default class CommandUser {
   }
 
   async uploadImage(file, userId) {
-    console.log("file", file);
     const params = { where: { id: userId } };
     const getUser = await this.query.getUserById(userId);
     let updateData = {};
@@ -189,7 +188,6 @@ export default class CommandUser {
     fs.unlink(`public/${path}`, (err) => {
       if (err) console.log(err);
     });
-    console.log("imageUrl", updateData);
     await this.user.updateOneUser(updateData, params);
   }
 }

@@ -89,7 +89,6 @@ const updateUser = tryCatch(async (req, res) => {
 
 const uploadImage = tryCatch(async (req, res) => {
   const params = req.params.userId;
-  console.log("req", req.headers);
   const file = req.file;
   const response = await command.uploadImage(file, params);
   return utils.responseSuccess(res, response);
