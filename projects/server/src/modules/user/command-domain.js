@@ -1,3 +1,4 @@
+import fs from "fs";
 import { Op } from "sequelize";
 import jwt from "jsonwebtoken";
 import Users from "./repositories.js";
@@ -173,5 +174,22 @@ export default class CommandUser {
     }
 
     await this.user.updateOneUser(updateData, { where: { id: userId } });
+  }
+
+  async uploadImage(file, userId) {
+    console.log("file", file);
+    const params = { where: { id: userId } };
+    const getUser = await this.query.getUserById(userId);
+    let updateData = {};
+    const imageUrl = `${process.env.SERVER_LINK}/${file.filename}`;
+    if (getUser && getUser.dataValues.image_url !== imageUrl) {
+      updateData.image_url = imageUrl;
+    }
+    const path = getUser.dataValues.image_url.substring(22);
+    fs.unlink(`public/${path}`, (err) => {
+      if (err) console.log(err);
+    });
+    console.log("imageUrl", updateData);
+    await this.user.updateOneUser(updateData, params);
   }
 }

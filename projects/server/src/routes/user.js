@@ -2,6 +2,7 @@ import { Router } from "express";
 import userHandler from "../modules/user/api-handler.js";
 import setRateLimiter from "express-rate-limit";
 import jwtAuth from "../helpers/jwt-auth.js";
+import upload from "../helpers/upload.js";
 
 const rateLimit = setRateLimiter({
   windowMs: 24 * 36 * 1e5,
@@ -27,5 +28,6 @@ router.post("/reset-password/request", userHandler.resetPassword);
 router.post("/reset-password", userHandler.updateResetPassword);
 
 router.put("/:userId", jwtAuth, userHandler.updateUser);
+router.put("/upload-image/:userId", jwtAuth, upload, userHandler.uploadImage);
 
 export default router;
