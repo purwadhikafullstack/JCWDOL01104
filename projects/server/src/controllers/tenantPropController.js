@@ -12,7 +12,6 @@ Property.sync();
 //   try {
 //     // console.log("udah nyambung");
 //     // console.log("apajadehhhhhhhhhh");
-
 //     const result = await Products.findAll({
 //       attributes: [
 //         [sequelize.fn("COUNT", sequelize.col("product_id")), "productCount"],
