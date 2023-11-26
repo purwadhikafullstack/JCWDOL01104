@@ -34,12 +34,6 @@ app.use("/auth", routes.authRoutes);
 app.use(errorHandler);
 app.use(notFound);
 
-
-
-
-
-
-
 // app.use("/api/productListData", productRoutes);
 
 
