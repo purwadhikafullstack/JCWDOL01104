@@ -4,7 +4,7 @@ import utils from "../../utils/utils.js";
 import AppError from "../../utils/app-error.js";
 import Roles from "../role/repositories.js";
 import Categories from "../category/repositories.js";
-import Locations from "../../modules/location/repostirories.js";
+import Locations from "../../modules/location/repositories.js";
 
 const router = Router();
 const role = new Roles();
