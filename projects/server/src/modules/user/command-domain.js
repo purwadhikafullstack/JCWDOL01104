@@ -1,3 +1,4 @@
+import fs from "fs";
 import { Op } from "sequelize";
 import jwt from "jsonwebtoken";
 import Users from "./repositories.js";
@@ -78,7 +79,7 @@ export default class CommandUser {
     const getUser = await this.query.getUserByEmailOrPhoneNumber(emailOrPhoneNumber);
     if (!getUser.password) throw new AppError("Password tidak valid, silakan reset password", 400);
     const checkPwd = await bcrypt.compareHash(password, getUser.password);
-    if (!checkPwd) throw new AppError("Email atau password tidak sesui", 403);
+    if (!checkPwd) throw new AppError("Email atau password tidak sesuai", 403);
     const data = { id: getUser.id, image_url: getUser.image_url, role: getUser.role.role };
     const token = jwt.sign(data, process.env.SECRET_KEY, { expiresIn: "30d" });
     return token;
@@ -94,7 +95,7 @@ export default class CommandUser {
       throw new AppError("Otp tidak berlaku", 403);
     }
     if (getOtp) await this.otp.updateOnetOtp({ otp: otp }, { where: { email: email } });
-    mailer.verifyEmail(email, otp);
+    await mailer.verifyEmail(email, otp);
   }
 
   async verifyEmail(payload) {
@@ -104,5 +105,89 @@ export default class CommandUser {
     const updateData = { email_verified: true };
     await this.user.updateOneUser(updateData, { where: { email: email } });
     await this.otp.deleteOnetOtp({ where: { [Op.and]: [{ email: email }, { otp: otp }] } });
+  }
+
+  async updatePassword(payload) {
+    const { oldPassword, newPassword, confirmPassword, userId } = payload;
+    const getUser = await this.query.getUserById(userId);
+    if (!getUser) throw new AppError("User not found", 404);
+    const checkPwd = await bcrypt.compareHash(oldPassword, getUser.dataValues.password);
+    if (!checkPwd) throw new AppError("Password isn't valid", 403);
+    if (!newPassword || !confirmPassword) throw new AppError("Field are require");
+    if (newPassword && confirmPassword) {
+      if (newPassword !== confirmPassword) throw new AppError("Password must match", 403);
+      const pwd = await bcrypt.generateHash(newPassword);
+      const updateData = { password: pwd };
+      const params = { where: { id: userId } };
+      await this.user.updateOneUser(updateData, params);
+    }
+  }
+
+  async resetPassword(payload) {
+    const { email } = payload;
+    const getUser = await this.query.getUserByEmail(email);
+    if (!getUser) throw new AppError("User not found", 404);
+    const token = await bcrypt.generateHash(String(getUser.dataValues.id));
+    const link = `${process.env.CLIENT_LINK}/reset-password?token=${token}&userId=${getUser.dataValues.id}`;
+    const username = getUser.dataValues.name;
+    const contain = { link, username };
+    await mailer.resetPassword(email, contain);
+  }
+
+  async updateResetPassword(payload) {
+    const { newPassword, confirmPassword, token, userId } = payload;
+    const getUser = await this.query.getUserById(userId);
+    if (!getUser) throw new AppError("User not found", 403);
+    const validToken = await bcrypt.compareHash(userId, String(token));
+    if (!validToken) throw new AppError("Token invalid", 403);
+    if (!newPassword || !confirmPassword) throw new AppError("Field are require");
+    if (newPassword && confirmPassword) {
+      if (newPassword !== confirmPassword) throw new AppError("Password must match", 403);
+      const pwd = await bcrypt.generateHash(newPassword);
+      const updateData = { password: pwd };
+      const params = { where: { id: userId } };
+      await this.user.updateOneUser(updateData, params);
+    }
+  }
+
+  async updateUser(payload, userId) {
+    const { name, email, gender, birthdate } = payload;
+    const getUser = await this.query.getUserById(userId);
+    if (!getUser) throw new AppError("User not found", 403);
+    if (email) {
+      const checkUser = await this.query.getUserByEmail(email);
+      if (checkUser) throw new AppError("Email Telah Digunakan", 403);
+    }
+    const userData = getUser.dataValues;
+    let updateData = {};
+    if (userData && userData.name !== name) {
+      updateData.name = name;
+    }
+    if (userData && userData.email !== email) {
+      updateData.email = email;
+    }
+    if (userData && userData.gender !== gender) {
+      updateData.gender = gender;
+    }
+    if (userData && userData.birthdate !== birthdate) {
+      updateData.birthdate = birthdate;
+    }
+
+    await this.user.updateOneUser(updateData, { where: { id: userId } });
+  }
+
+  async uploadImage(file, userId) {
+    const params = { where: { id: userId } };
+    const getUser = await this.query.getUserById(userId);
+    let updateData = {};
+    const imageUrl = `${process.env.SERVER_LINK}/${file.filename}`;
+    if (getUser && getUser.dataValues.image_url !== imageUrl) {
+      updateData.image_url = imageUrl;
+    }
+    const path = getUser.dataValues.image_url.substring(22);
+    fs.unlink(`public/${path}`, (err) => {
+      if (err) console.log(err);
+    });
+    await this.user.updateOneUser(updateData, params);
   }
 }

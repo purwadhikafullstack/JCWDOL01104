@@ -46,5 +46,61 @@ const verifyEmail = joi.object({
   otp: joi.string().min(6).max(6).required(),
 });
 
-const schema = { register, login, otpRequest, verifyEmail };
+const updatePassword = joi.object({
+  oldPassword: joi.string().min(6).max(16).required(),
+  newPassword: joi
+    .string()
+    .min(6)
+    .max(16)
+    .disallow(joi.ref("oldPassword"))
+    .required()
+    .messages({ "any.base": "does not match" }),
+  confirmPassword: joi
+    .any()
+    .equal(joi.ref("newPassword"))
+    .required()
+    .label("Confirm password")
+    .options({ messages: { "any.only": "{{#label}} does not match" } }),
+  userId: joi.string().required(),
+});
+
+const email = joi.object({
+  email: joi
+    .string()
+    .min(3)
+    .max(50)
+    .email({ minDomainSegments: 2, tlds: { allow: ["com", "me", "net"] } })
+    .required(),
+});
+
+const resetPassword = joi.object({
+  newPassword: joi.string().min(6).max(16).required(),
+  confirmPassword: joi
+    .any()
+    .equal(joi.ref("newPassword"))
+    .required()
+    .label("Confirm password")
+    .options({ messages: { "any.only": "{{#label}} does not match" } }),
+  token: joi.string().required(),
+  userId: joi.string().required(),
+});
+
+const updateUser = joi.object({
+  name: joi
+    .string()
+    .min(3)
+    .max(50)
+    .regex(/^[A-Za-z '.]+$/)
+    .allow(),
+  email: joi
+    .string()
+    .min(3)
+    .max(50)
+    .email({ minDomainSegments: 2, tlds: { allow: ["com", "me", "net"] } })
+    .allow(),
+  gender: joi.string().valid("male", "female").allow(),
+  birthdate: joi.number().allow(),
+});
+
+const schema = { register, login, otpRequest, verifyEmail, updatePassword, email, resetPassword, updateUser };
 export default schema;

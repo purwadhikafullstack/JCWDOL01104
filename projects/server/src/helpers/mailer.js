@@ -14,9 +14,9 @@ const mailer = nodemailer.createTransport({
 });
 
 const pathVerifyEmail = "./src/helpers/template/verify-email.html";
-// from: { name: "PMC Black Water", address: `${process.env.GMAIL_USER}` },
+const pathResetPassword = "./src/helpers/template/reset-password.html";
 
-const verifyEmail = (email, otp) => {
+const verifyEmail = async (email, otp) => {
   const temp = fs.readFileSync(pathVerifyEmail, "utf8");
   const body = mustache.render(temp, { otp });
   const mailOpt = {
@@ -28,4 +28,17 @@ const verifyEmail = (email, otp) => {
   mailer.sendMail(mailOpt);
 };
 
-export default { verifyEmail };
+const resetPassword = async (email, contain) => {
+  console.log(contain);
+  const temp = fs.readFileSync(pathResetPassword, "utf8");
+  const body = mustache.render(temp, { contain });
+  const mailOpt = {
+    from: `PMC Black Water <${process.env.GMAIL_USER}>`,
+    to: email,
+    subject: "Reset Password",
+    html: body,
+  };
+  mailer.sendMail(mailOpt);
+};
+
+export default { verifyEmail, resetPassword };
