@@ -1,4 +1,4 @@
-import sequelize from "../config/db";
+import sequelize from "../config/db.js";
 import { DataTypes } from "sequelize";
 
 const Room = sequelize.define(
@@ -6,9 +6,10 @@ const Room = sequelize.define(
   {
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
     name: { type: DataTypes.STRING },
-    price: { type: DataTypes.NUMBER },
-    description: { type: DataTypes.STRING },
-    person: { type: DataTypes.NUMBER },
+    price: { type: DataTypes.INTEGER },
+    description: { type: DataTypes.TEXT },
+    person: { type: DataTypes.INTEGER },
+    image_url: { type: DataTypes.STRING },
   },
   { timestamps: false }
 );

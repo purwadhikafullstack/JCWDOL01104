@@ -22,7 +22,7 @@ const getPropertyById = tryCatch(async (req, res) => {
 const addProperty = tryCatch(async (req, res) => {
   const payload = req.body;
   const response = await command.addProperty(payload);
-  return utils.responseSuccess(res, response, "Success Register", 201);
+  return utils.responseSuccess(res, response, "Success", 201);
 });
 
 export default {

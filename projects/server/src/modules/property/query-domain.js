@@ -1,5 +1,6 @@
 import Property from "./repositories.js";
 import Location from "../../models/location.js";
+import Room from "../../models/room.js";
 
 export default class QueryProperty {
   constructor() {
@@ -13,7 +14,7 @@ export default class QueryProperty {
   }
 
   async getPropertyById(propertyId) {
-    const params = { include: [{ model: Location }], where: { id: propertyId } };
+    const params = { include: [{ model: Location }, { model: Room }], where: { id: propertyId } };
     const data = await this.property.findOneProperty(params);
     return data;
   }

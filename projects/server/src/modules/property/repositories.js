@@ -1,7 +1,9 @@
 import Property from "../../models/property.js";
 import Location from "../../models/location.js";
+import Room from "../../models/room.js";
 
 Property.belongsTo(Location);
+Property.hasMany(Room);
 export default class Properties {
   async findAllProperty(params) {
     const result = await Property.findAll(params);
