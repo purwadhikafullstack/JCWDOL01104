@@ -4,7 +4,7 @@ import cors from "cors";
 import helmet from "helmet";
 import passport from "passport";
 import session from "express-session";
-import propertyRoutes from "../server/src/routers/property.router.js"
+import propertyRoutes from "../server/src/routers/property.router.js";
 import roomRoutes from "../server/src/routers/room.router.js"
 
 import { connetionMysql } from "./src/config/db.js";
@@ -20,6 +20,7 @@ const PORT = process.env.PORT || 8080;
 connetionMysql();
 passportConfig(passport);
 
+app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors(corsConfig));
@@ -27,7 +28,7 @@ app.use(morgan("dev"));
 app.use(helmet());
 app.use(session(sessionConfig));
 
-app.use ("/api/propertyList",propertyRoutes);
+app.use("/api/propertyList", propertyRoutes);
 app.use ("/api/roomList",roomRoutes);
 app.use("/api/secret/seed", routes.seedRoutes);
 app.use("/api/user", routes.userRoutes);
