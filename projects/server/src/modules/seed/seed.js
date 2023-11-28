@@ -6,6 +6,8 @@ import Roles from "../role/repositories.js";
 import Categories from "../category/repositories.js";
 import Locations from "../../modules/location/repositories.js";
 
+
+
 const router = Router();
 const role = new Roles();
 const category = new Categories();
