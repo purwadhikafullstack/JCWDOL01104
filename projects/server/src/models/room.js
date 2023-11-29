@@ -9,7 +9,7 @@ const Room = sequelize.define(
     price: { type: DataTypes.INTEGER },
     description: { type: DataTypes.TEXT },
     person: { type: DataTypes.INTEGER },
-    image_url: { type: DataTypes.STRING },
+
   },
   { timestamps: false }
 );
