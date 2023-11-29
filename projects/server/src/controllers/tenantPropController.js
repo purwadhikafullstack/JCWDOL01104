@@ -4,9 +4,12 @@ import { Sequelize } from "sequelize";
 // const Property = db.Property;
 import sequelize from "sequelize";
 import Property from "../models/property.js";
+import Room from "../models/room.js";
+
 
 const attributesChosen = ["id", "name", "description", "image_url"];
 Property.sync();
+Room.sync();
 
 // export const totalProperty = async (req:any, res: any) => {
 //   try {
@@ -30,10 +33,11 @@ Property.sync();
 //   }
 // };
 
+
 export const getPropertyData = async (req, res) => {
   try {
-    console.log("udah nyambung");
-    console.log("apajadehhhhhhhhhh");
+    console.log("Get Property Data");
+    
     const result = await Property.findAll({
       attributes: attributesChosen,
     });
@@ -81,12 +85,12 @@ export const editPropertyData = async (req, res) => {
     const { id } = req.params;
     console.log("PropertyEdit Server :", id);
 
-    const { name, desccription, image_url } = req.body;
+    const { name, description, image_url } = req.body;
 
     console.log(req.body);
 
     Property.update(
-      { name: name, description: desccription, image_url: image_url },
+      { name: name, description: description, image_url: image_url },
       { where: { id: id } }
     );
 
@@ -103,16 +107,44 @@ export const editPropertyData = async (req, res) => {
 export const deletePropertyData = async (req, res) => {
   try {
     const { id } = req.params;
+    // const propertyToDelete=await Property.findByPk(id);
+   
+    // if (!propertyToDelete){
+    //   return res.status(404).send({
+    //     message: "Property not found",
+    //   });
+    // }
+
+    // await propertyToDelete.destroy({ include: Room });
+
     await Property.destroy({
       where: {
         id: id,
       },
+      include: [{ model: Room, where: { property_id: id } }],
     });
+
+        // Find all rooms associated with the property
+        // const roomsToDelete = await Room.findAll({
+        //   where: {
+        //     property_id: id,
+        //   },
+        // });
+    
+        // // Delete each associated room
+        // await Promise.all(roomsToDelete.map(room => room.destroy()));
+    
+        // // Now, delete the property
+        // await Property.destroy({
+        //   where: {
+        //     id: id,
+        //   },
+        // });
 
     return res.status(204).send({
       message: "Property Data Succesfully Deleted",
     });
-  } catch {
+  } catch(err) {
     return res.send({
       message: err.message,
     });
