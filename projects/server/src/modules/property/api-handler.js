@@ -7,6 +7,12 @@ import utils from "../../utils/utils.js";
 const query = new QueryProperty();
 const command = new CommandProperty();
 
+const getLocations = tryCatch(async (req, res) => {
+  const params = req.query;
+  const response = await query.getLocations(params);
+  return utils.responseSuccess(res, response);
+});
+
 const getProperties = tryCatch(async (req, res) => {
   const params = req.query;
   const response = await query.getProperties(params);
@@ -25,8 +31,4 @@ const addProperty = tryCatch(async (req, res) => {
   return utils.responseSuccess(res, response, "Success", 201);
 });
 
-export default {
-  getProperties,
-  getPropertyById,
-  addProperty,
-};
+export default { getLocations, getProperties, getPropertyById, addProperty };

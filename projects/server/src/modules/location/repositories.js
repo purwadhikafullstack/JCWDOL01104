@@ -3,8 +3,8 @@ import Property from "../../models/property.js";
 
 Location.hasMany(Property);
 export default class Locations {
-  async findManyLocation(param) {
-    const result = await Location.create(param);
+  async findManyLocation(params) {
+    const result = await Location.findAll(params);
     return result;
   }
 
