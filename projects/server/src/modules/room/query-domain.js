@@ -13,7 +13,7 @@ export default class QueryRoom {
   }
 
   async getRoomById(roomId) {
-    const params = {};
+    const params = { where: { id: roomId } };
     const data = await this.room.findOneRoom(params);
     return data;
   }
