@@ -1,5 +1,6 @@
 import sequelize from "../config/db.js";
 import { DataTypes } from "sequelize";
+import Property from "./property.js";
 
 const Room = sequelize.define(
   "room",
@@ -12,5 +13,9 @@ const Room = sequelize.define(
   },
   { timestamps: false }
 );
+
+//Define Associations
+
+
 
 export default Room;

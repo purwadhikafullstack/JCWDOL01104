@@ -6,6 +6,7 @@ import Property from "../models/property.js";
 
 const attributesChosen = ["id", "name", "price", "description", "person"];
 
+
 Property.hasMany(Room, {
   foreignKey: "property_id",
   sourceKey: "id",
@@ -13,6 +14,7 @@ Property.hasMany(Room, {
   hooks: true,
   onDelete: "CASCADE",
 });
+
 Room.belongsTo(Property, {
   foreignKey: "property_id",
   as: "property",
@@ -58,11 +60,19 @@ export const getRoomsInProperty = async (req, res) => {
       where: { property_id: propId },
     });
 
-    const dataValuesArray = result.map((result) => result.dataValues);
-    console.log(result);
+    // const dataValuesArray = result.map((result) => result.dataValues);
+    // console.log(result);
+
+    // const data =res.status(206).send({
+    //   message: "Room Data Retrieved Succesfully",
+    //   data: dataValuesArray,
+    // });
+
+    // console.log(data)
+
     return res.status(206).send({
       message: "Room Data Retrieved Succesfully",
-      data: dataValuesArray,
+      data: result,
     });
   } catch (err) {
     return res.send({

@@ -5,48 +5,42 @@ import { Sequelize } from "sequelize";
 import sequelize from "sequelize";
 import Property from "../models/property.js";
 import Room from "../models/room.js";
+import Category from "../models/category.js";
 
 
-const attributesChosen = ["id", "name", "description", "image_url"];
+const attributesChosen = ["id", "name", "description", "image_url","category_id"];
+Category.hasMany(Property, {
+  foreignKey: "category_id",
+  sourceKey: "id",
+  as: "property",
+  hooks : true
+});
+
+Property.belongsTo(Category, {
+  foreignKey: "category_id",
+  as: "category",
+  hooks : true
+});
+
+
 Property.sync();
 Room.sync();
-
-// export const totalProperty = async (req:any, res: any) => {
-//   try {
-//     // console.log("udah nyambung");
-//     // console.log("apajadehhhhhhhhhh");
-//     const result = await Products.findAll({
-//       attributes: [
-//         [sequelize.fn("COUNT", sequelize.col("product_id")), "productCount"],
-//       ],
-//     });
-
-//     //console.log(result[0].dataValues.productCount);
-//     return res.status(200).send({
-//         message: "Total product acquired",
-//         data: result[0].dataValues.productCount,
-//       });
-//   } catch (err: any) {
-//     return res.send({
-//       message: err.message,
-//     });
-//   }
-// };
-
 
 export const getPropertyData = async (req, res) => {
   try {
     console.log("Get Property Data");
     
     const result = await Property.findAll({
-      attributes: attributesChosen,
+      attributes: attributesChosen,  include:[{ model: Category, as: 'category' }]
     });
 
-    const dataValuesArray = result.map((result) => result.dataValues);
+    console.log(result)
+
+    // const dataValuesArray = result.map((result) => result.dataValues);
 
     return res.status(200).send({
-      message: "Product Data Succesfully Retrieved",
-      data: dataValuesArray,
+      message: "Property Data Succesfully Retrieved",
+      data: result,
     });
   } catch (err) {
     return res.send({
@@ -85,12 +79,12 @@ export const editPropertyData = async (req, res) => {
     const { id } = req.params;
     console.log("PropertyEdit Server :", id);
 
-    const { name, description, image_url } = req.body;
+    const { name, description, image_url, category_id} = req.body;
 
     console.log(req.body);
 
     Property.update(
-      { name: name, description: description, image_url: image_url },
+      { name: name, description: description, image_url: image_url, category_id :category_id },
       { where: { id: id } }
     );
 
