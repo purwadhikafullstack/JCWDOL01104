@@ -31,8 +31,10 @@ app.use(session(sessionConfig));
 app.use("/api/propertyList", propertyRoutes);
 app.use ("/api/roomList",roomRoutes);
 app.use("/api/secret/seed", routes.seedRoutes);
-app.use("/api/user", routes.userRoutes);
 app.use("/auth", routes.authRoutes);
+app.use("/api/user", routes.userRoutes);
+app.use("/api/property", routes.propertyRoutes);
+app.use("/api/room", routes.roomRoutes);
 
 app.use(errorHandler);
 app.use(notFound);
