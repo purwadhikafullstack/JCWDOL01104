@@ -6,6 +6,7 @@ import sequelize from "sequelize";
 import Property from "../models/property.js";
 import Room from "../models/room.js";
 import Category from "../models/category.js";
+import User from "../models/user.js";
 
 
 const attributesChosen = ["id", "name", "description", "image_url","category_id"];
@@ -22,16 +23,32 @@ Property.belongsTo(Category, {
   hooks : true
 });
 
+User.hasMany(Property, {
+  foreignKey: "user_id",
+  sourceKey: "id",
+  as: "propertyOwned",
+  hooks : true
+});
+
+Property.belongsTo(User, {
+  foreignKey: "user_id",
+  as: "user",
+  hooks : true
+});
+
 
 Property.sync();
 Room.sync();
+User.sync();
 
 export const getPropertyData = async (req, res) => {
   try {
     console.log("Get Property Data");
+    const userId=req.params.id
+    console.log(req.params)
     
     const result = await Property.findAll({
-      attributes: attributesChosen,  include:[{ model: Category, as: 'category' }]
+      attributes: attributesChosen,  include:[{ model: Category, as: 'category' }],where:{user_id:userId}
     });
 
     console.log(result)
@@ -56,12 +73,9 @@ const property = async (data) => {
 
 export const postPropertyData = async (req, res) => {
   try {
-    console.log(req.body);
-    // const { name, description, image_url } = req.body;
-    // const data = { name: name, description: description, image_url: image_url };
-
-    // console.log(data);
-    const result = await Property.create(req.body);
+    const { name, description, image_url, category_id} = req.body;
+    const userId=req.params.id
+    const result = await Property.create({name: name, description: description, image_url: image_url, category_id :category_id ,user_id:userId});
 
     return res.status(202).send({
       message: "Property Data Succesfully Posted",

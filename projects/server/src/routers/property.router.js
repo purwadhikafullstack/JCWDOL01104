@@ -5,8 +5,8 @@ import { editPropertyData, getPropertyData, postPropertyData , deletePropertyDat
 const router = Router();
 
 // router.get ("/", totalProductList);
-router.get("/",getPropertyData);
-router.post("/",postPropertyData);
+router.get("/:id",getPropertyData);
+router.post("/:id",postPropertyData);
 // router.delete("/","");
 router.put("/:id",editPropertyData);
 router.delete("/:id",deletePropertyData);
