@@ -7,9 +7,10 @@ const Room = sequelize.define(
   {
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
     name: { type: DataTypes.STRING },
-    price: { type: DataTypes.BIGINT },
-    description: { type: DataTypes.STRING },
+    price: { type: DataTypes.INTEGER },
+    description: { type: DataTypes.TEXT },
     person: { type: DataTypes.INTEGER },
+
   },
   { timestamps: false }
 );
