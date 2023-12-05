@@ -8,8 +8,8 @@ const Room = sequelize.define(
     name: { type: DataTypes.STRING },
     price: { type: DataTypes.INTEGER },
     description: { type: DataTypes.TEXT },
-    person: { type: DataTypes.INTEGER },
-
+    guest: { type: DataTypes.INTEGER },
+    image_url: { type: DataTypes.TEXT },
   },
   { timestamps: false }
 );

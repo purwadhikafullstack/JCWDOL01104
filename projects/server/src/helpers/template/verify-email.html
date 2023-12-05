@@ -3,52 +3,28 @@
   <head>
     <meta charset="UTF-8" />
     <title>Received OTP</title>
-    <style>
-      /* Add your CSS styles here */
-      body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-      }
-      .container {
-        text-align: center;
-      }
-      .otp-code {
-        font-size: 32px;
-        margin-bottom: 20px;
-        font-weight: 900;
-        letter-spacing: 8px;
-        color: #f4f4f4;
-        margin: auto;
-      }
-      .otp-container {
-        background-color: darkslategrey;
-        padding: 20px;
-        display: flex;
-        justify-content: center;
-      }
-    </style>
   </head>
   <body>
-    <div class="container" id="otpContainer">
-      <h2>Kode OTP</h2>
-      <p>
-        Mohon pastikan Anda tidak pernah memberitahukan kode ini pada siapa pun. Terima kasih telah menggunakan layanan
-        kami.
-      </p>
-      <p>Kode OTP Anda:</p>
-      <div class="otp-container">
-        <p class="otp-code">{{otp}}</p>
-      </div>
+    <div style="display: flex">
+      <img style="width: 48px" src="cid:logo" />
+      <h1 style="font-size: 24px; font-weight: 500">Lawang</h1>
     </div>
+
+    <p style="font-size: 18px; font-weight: 700">Halo {{userName}}</p>
+    <p style="font-size: 24px">Kode OTP</p>
+    <p style="font-size: 16px">
+      Mohon pastikan Anda tidak pernah memberitahukan kode ini pada siapa pun. Terima kasih telah menggunakan layanan
+      kami.
+    </p>
+
+    <p style="text-align: center; font-weight: 700; font-size: 18px">Kode OTP Anda:</p>
+    <div style="background-color: rgb(240, 240, 240); text-align: center">
+      <p style="padding: 24px; font-weight: 900; letter-spacing: 10px; font-size: 48px">{{otp}}</p>
+    </div>
+
     <div style="margin-top: 20px">
-      <p>Salam,</p>
-      <p>Tim Lawang Inc.</p>
+      <p style="font-size: 16px; margin: 0px">Salam,</p>
+      <p style="font-size: 16px">Tim Lawang Inc.</p>
     </div>
   </body>
 </html>

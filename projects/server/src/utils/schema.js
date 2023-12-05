@@ -102,5 +102,24 @@ const updateUser = joi.object({
   birthdate: joi.number().allow(),
 });
 
-const schema = { register, login, otpRequest, verifyEmail, updatePassword, email, resetPassword, updateUser };
+const bookOrder = joi.object({
+  startDate: joi.number().required(),
+  endDate: joi.number().required(),
+  guest: joi.number().required(),
+  totalPrice: joi.number().required(),
+  userId: joi.alternatives().try(joi.string(), joi.number()).required(),
+  roomId: joi.alternatives().try(joi.string(), joi.number()).required(),
+});
+
+const schema = {
+  register,
+  login,
+  otpRequest,
+  verifyEmail,
+  updatePassword,
+  email,
+  resetPassword,
+  updateUser,
+  bookOrder,
+};
 export default schema;
