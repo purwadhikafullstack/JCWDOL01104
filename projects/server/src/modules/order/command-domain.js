@@ -1,3 +1,4 @@
+import fs from "fs";
 import midtrans from "midtrans-client";
 import Orders from "./repositories.js";
 import QueryOrder from "./query-domain.js";
@@ -100,10 +101,27 @@ export default class CommandOrder {
   }
 
   async expiredOrder(payload) {
+    const params = { where: { id: orderId } };
     const { orderId } = payload;
     const getOrder = await this.query.getOrderById(orderId);
     if (!getOrder) throw new AppError("Order not Found", 404);
-    if (getOrder.dataValues.status === "unpaid")
-      await this.order.updateOneOrder({ status: "expired" }, { where: { id: orderId } });
+    if (getOrder.dataValues.status === "unpaid") await this.order.updateOneOrder({ status: "expired" }, params);
+  }
+
+  async uploadImageTransaction(file, orderId) {
+    const params = { where: { id: orderId } };
+    const getOrder = await this.query.getOrderById(orderId);
+    let updateData = {};
+    const imageUrl = `${process.env.SERVER_LINK}/${file.filename}`;
+    if (getOrder && getOrder.dataValues.image_url !== imageUrl) {
+      updateData.image_url = imageUrl;
+    }
+    if (getOrder && getOrder.dataValues.image_url) {
+      const path = getOrder.dataValues.image_url.substring(22);
+      fs.unlink(`public/${path}`, (err) => {
+        if (err) console.log(err);
+      });
+    }
+    await this.order.updateOneOrder(updateData, params);
   }
 }
