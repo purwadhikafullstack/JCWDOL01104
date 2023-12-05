@@ -30,20 +30,18 @@ export default class CommandUser {
     };
     const getUser = await this.query.getUserByEmail(email);
     if (!getUser) {
+      const user = await this.user.insertOneUser(data);
       const dataUser = {
-        name: name,
-        image_url: picture,
+        id: user.dataValues.id,
         role: findRole.dataValues.role,
       };
       const token = jwt.sign(dataUser, process.env.SECRET_KEY, { expiresIn: "30d" });
-      await this.user.insertOneUser(data);
       return token;
     }
     if (getUser) {
       const userData = getUser.dataValues;
       const dataUser = {
         id: userData.id,
-        image_url: userData.image_url,
         role: userData.role.role,
       };
       const token = jwt.sign(dataUser, process.env.SECRET_KEY, { expiresIn: "30d" });
@@ -87,15 +85,18 @@ export default class CommandUser {
 
   async requestOtp(payload) {
     const { email } = payload;
-    const getOtp = await this.otp.findOneOtp({ where: { email: email } });
     const otp = otpGenerator.generate(6, { lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false });
+    const getUser = await this.query.getUserByEmail(email);
+    if (!getUser) throw new AppError("User not Found");
+    const getOtp = await this.otp.findOneOtp({ where: { email: email } });
     if (!getOtp) await this.otp.inserOnetOtp({ email: email, otp: otp });
     if (getOtp && getOtp.dataValues.otpExpired < Date.now()) {
       await this.otp.deleteOnetOtp({ where: { email: email } });
       throw new AppError("Otp tidak berlaku", 403);
     }
-    if (getOtp) await this.otp.updateOnetOtp({ otp: otp }, { where: { email: email } });
-    await mailer.verifyEmail(email, otp);
+    const content = { otp: otp, username: getUser.dataValues.name };
+    if (getOtp) await this.otp.updateOnetOtp(content, { where: { email: email } });
+    await mailer.verifyEmail(email, content);
   }
 
   async verifyEmail(payload) {

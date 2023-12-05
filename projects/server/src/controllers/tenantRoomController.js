@@ -6,19 +6,19 @@ import Property from "../models/property.js";
 
 const attributesChosen = ["id", "name", "price", "description", "person"];
 
-Property.hasMany(Room, {
-  foreignKey: "property_id",
-  sourceKey: "id",
-  as: "rooms",
-  hooks: true,
-  onDelete: "CASCADE",
-});
-Room.belongsTo(Property, {
-  foreignKey: "property_id",
-  as: "property",
-  hooks: true,
-  onDelete: "CASCADE",
-});
+// Property.hasMany(Room, {
+//   foreignKey: "property_id",
+//   sourceKey: "id",
+//   as: "rooms",
+//   hooks: true,
+//   onDelete: "CASCADE",
+// });
+// Room.belongsTo(Property, {
+//   foreignKey: "property_id",
+//   as: "property",
+//   hooks: true,
+//   onDelete: "CASCADE",
+// });
 
 Room.sync();
 Property.sync();
@@ -80,10 +80,7 @@ export const updateRoomData = async (req, res) => {
 
     console.log(req.body);
 
-    Room.update(
-      { name: name, price: price, description: description, person: person },
-      { where: { id: id } }
-    );
+    Room.update({ name: name, price: price, description: description, person: person }, { where: { id: id } });
 
     return res.status(207).send({
       message: "Room Data Succesfully Updated",
