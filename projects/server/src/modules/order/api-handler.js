@@ -49,6 +49,13 @@ const expiredOrder = tryCatch(async (req, res) => {
   return utils.responseSuccess(res, response, "Success Login");
 });
 
+const uploadImageTransaction = tryCatch(async (req, res) => {
+  const params = req.params.orderId;
+  const file = req.file;
+  const response = await command.uploadImageTransaction(file, params);
+  return utils.responseSuccess(res, response, "Success Login");
+});
+
 export default {
   getOrders,
   getOrderById,
@@ -57,4 +64,5 @@ export default {
   bookOrder,
   transaction,
   expiredOrder,
+  uploadImageTransaction,
 };

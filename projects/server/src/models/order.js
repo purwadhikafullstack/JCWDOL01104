@@ -11,6 +11,7 @@ const Order = sequelize.define(
     end_date: { type: DataTypes.BIGINT },
     total_price: { type: DataTypes.INTEGER },
     guest: { type: DataTypes.INTEGER },
+    image_url: { type: DataTypes.TEXT },
     expired: { type: DataTypes.BIGINT },
   },
   { updatedAt: false }
