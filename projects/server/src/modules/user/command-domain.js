@@ -82,6 +82,7 @@ export default class CommandUser {
     if (!checkPwd) throw new AppError("Email atau password tidak sesuai", 403);
     const data = { id: getUser.id, image_url: getUser.image_url, role: getUser.role.role };
     const token = jwt.sign(data, process.env.SECRET_KEY, { expiresIn: "30d" });
+    console.log(token)
     return token;
   }
 
