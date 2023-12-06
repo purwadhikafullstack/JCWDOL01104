@@ -6,8 +6,8 @@ import sequelize from "sequelize";
 import Property from "../models/property.js";
 import Category from "../models/category.js";
 
-Property.sync()
-Category.sync()
+Property.sync();
+Category.sync();
 
 const attributesChosen = ["id", "category"];
 
