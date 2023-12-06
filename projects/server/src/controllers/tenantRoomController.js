@@ -6,6 +6,7 @@ import Property from "../models/property.js";
 
 const attributesChosen = ["id", "name", "price", "description", "person"];
 
+
 Property.hasMany(Room, {
   foreignKey: "property_id",
   sourceKey: "id",
