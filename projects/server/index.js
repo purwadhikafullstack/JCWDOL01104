@@ -6,6 +6,7 @@ import passport from "passport";
 import session from "express-session";
 import propertyRoutes from "../server/src/routers/property.router.js";
 import roomRoutes from "../server/src/routers/room.router.js";
+import categoryRoutes from "../server/src/routers/category.router.js";
 
 import { invoicePdf } from "./src/helpers/mailer.js";
 import { connetionMysql } from "./src/config/db.js";
@@ -31,6 +32,7 @@ app.use(helmet());
 app.use(session(sessionConfig));
 
 app.use("/api/propertyList", propertyRoutes);
+app.use("/api/categoryList", categoryRoutes);
 app.use("/api/roomList", roomRoutes);
 app.use("/api/secret/seed", routes.seedRoutes);
 app.use("/auth", routes.authRoutes);

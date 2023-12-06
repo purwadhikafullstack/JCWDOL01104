@@ -16,7 +16,6 @@ export default class CommandProperty {
       image_url: imageUrl,
       locationId: locationId,
     };
-
     await this.property.insertOneProperty(data);
   }
 }

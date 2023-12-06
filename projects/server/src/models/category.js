@@ -1,5 +1,6 @@
 import sequelize from "../config/db.js";
 import { DataTypes } from "sequelize";
+import Property from "./property.js";
 
 const Category = sequelize.define(
   "category",
@@ -9,5 +10,10 @@ const Category = sequelize.define(
   },
   { timestamps: false }
 );
+
+//Define Associations
+
+
+
 
 export default Category;
