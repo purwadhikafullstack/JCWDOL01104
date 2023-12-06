@@ -4,6 +4,7 @@ import Order from "../../models/order.js";
 
 Room.belongsTo(Property);
 Room.hasMany(Order);
+
 export default class Rooms {
   async findAllRoom(params) {
     const result = await Room.findAll(params);
