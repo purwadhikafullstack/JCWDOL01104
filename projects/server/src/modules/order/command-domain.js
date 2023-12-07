@@ -75,8 +75,8 @@ export default class CommandOrder {
     }
     const snap = new midtrans.Snap({
       isProduction: false,
-      clientKey: "SB-Mid-client-ua4G3MNRZB0VnKx_",
-      serverKey: "SB-Mid-server-NI6Hev6CLYDR6uF-FWQSOZ41",
+      clientKey: process.env.MIDTRANS_CLIENT_KEY,
+      serverKey: process.env.MIDTRANS_SERVER_KEY,
     });
 
     const parameter = {
