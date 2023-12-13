@@ -1,15 +1,16 @@
 import { Router } from "express";
-import Property from "../models/property.js";
 import { editPropertyData, getPropertyData, postPropertyData , deletePropertyData } from "../controllers/tenantPropController.js";
+import upload from "../helpers/upload.js";
+import jwtAuth from "../helpers/jwt-auth.js";
 
 const router = Router();
 
 // router.get ("/", totalProductList);
-router.get("/:id",getPropertyData);
-router.post("/:id",postPropertyData);
+router.get("/",jwtAuth, getPropertyData);
+router.post("/", jwtAuth, upload, postPropertyData);
 // router.delete("/","");
-router.put("/:id",editPropertyData);
-router.delete("/:id",deletePropertyData);
+router.put("/:id",jwtAuth,editPropertyData);
+router.delete("/:id",jwtAuth,deletePropertyData);
 
 
 export default router;

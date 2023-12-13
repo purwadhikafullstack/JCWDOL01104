@@ -1,6 +1,5 @@
 import sequelize from "../config/db.js";
 import { DataTypes } from "sequelize";
-import Property from "./property.js";
 
 const Room = sequelize.define(
   "room",
@@ -10,6 +9,8 @@ const Room = sequelize.define(
     price: { type: DataTypes.INTEGER },
     description: { type: DataTypes.TEXT },
     person: { type: DataTypes.INTEGER },
+    image_url:{type: DataTypes.STRING},
+    room_info: {type: DataTypes.STRING},
 
   },
   { timestamps: false }
