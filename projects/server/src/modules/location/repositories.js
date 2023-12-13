@@ -12,4 +12,9 @@ export default class Locations {
     const result = await Location.create(data);
     return result;
   }
+
+  async insertManyLocation(data) {
+    const result = await Location.bulkCreate(data);
+    return result;
+  }
 }

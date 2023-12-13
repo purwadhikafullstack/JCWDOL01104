@@ -15,6 +15,11 @@ export default class Properties {
     return result;
   }
 
+  async insertManyProperty(data) {
+    const result = await Property.bulkCreate(data);
+    return result;
+  }
+
   async insertOneProperty(data) {
     const result = await Property.create(data);
     return result;

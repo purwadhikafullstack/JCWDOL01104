@@ -1,5 +1,5 @@
 import Rooms from "./repositories.js";
-import Location from "../../models/location.js";
+import Order from "../../models/order.js";
 
 export default class QueryRoom {
   constructor() {
@@ -7,13 +7,13 @@ export default class QueryRoom {
   }
 
   async getRooms(query) {
-    const params = {};
+    const params = { include: [{ model: Order }] };
     const data = await this.room.findAllRoom(params);
     return data;
   }
 
   async getRoomById(roomId) {
-    const params = { where: { id: roomId } };
+    const params = { include: [{ model: Order }], where: { id: roomId } };
     const data = await this.room.findOneRoom(params);
     return data;
   }

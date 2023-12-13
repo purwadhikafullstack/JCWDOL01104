@@ -11,7 +11,7 @@ const User = sequelize.define("user", {
   phone_number: { type: DataTypes.STRING },
   birthdate: { type: DataTypes.BIGINT },
   gender: { type: DataTypes.ENUM(["male", "female"]) },
-  image_url: { type: DataTypes.STRING },
+  image_url: { type: DataTypes.TEXT },
 });
 
 export default User;

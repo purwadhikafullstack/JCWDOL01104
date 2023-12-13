@@ -7,7 +7,7 @@ import upload from "../helpers/upload.js";
 const rateLimit = setRateLimiter({
   windowMs: 24 * 36 * 1e5,
   limit: 5,
-  statusCode: 200,
+  statusCode: 429,
   message: { statusCode: 429, message: "Maksimal 5 request per hari" },
 });
 
