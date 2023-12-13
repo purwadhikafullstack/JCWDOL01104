@@ -1,7 +1,9 @@
 import User from "../../models/user.js";
 import Role from "../../models/role.js";
+import Order from "../../models/order.js";
 
 User.belongsTo(Role);
+User.hasMany(Order);
 export default class Users {
   async findAllUser(params) {
     const result = await User.findAll(params);

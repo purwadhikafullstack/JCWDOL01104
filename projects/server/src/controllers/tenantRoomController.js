@@ -100,10 +100,7 @@ export const updateRoomData = async (req, res) => {
 
     console.log(req.body);
 
-    Room.update(
-      { name: name, price: price, description: description, person: person },
-      { where: { id: id } }
-    );
+    Room.update({ name: name, price: price, description: description, person: person }, { where: { id: id } });
 
     return res.status(207).send({
       message: "Room Data Succesfully Updated",

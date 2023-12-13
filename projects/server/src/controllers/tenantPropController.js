@@ -11,31 +11,31 @@ import upload from "../helpers/upload.js";
 import fs from "fs";
 
 
-const attributesChosen = ["id", "name", "description", "image_url","category_id"];
+const attributesChosen = ["id", "name", "description", "image_url", "category_id"];
 Category.hasMany(Property, {
   foreignKey: "category_id",
   sourceKey: "id",
   as: "property",
-  hooks : true
+  hooks: true,
 });
 
 Property.belongsTo(Category, {
   foreignKey: "category_id",
   as: "category",
-  hooks : true
+  hooks: true,
 });
 
 User.hasMany(Property, {
   foreignKey: "user_id",
   sourceKey: "id",
   as: "propertyOwned",
-  hooks : true
+  hooks: true,
 });
 
 Property.belongsTo(User, {
   foreignKey: "user_id",
   as: "user",
-  hooks : true
+  hooks: true,
 });
 
 
@@ -52,7 +52,9 @@ export const getPropertyData = async (req, res) => {
     console.log("Get Property Data");
     const userId=req.user;
     const result = await Property.findAll({
-      attributes: attributesChosen,  include:[{ model: Category, as: 'category' }],where:{user_id:userId}
+      attributes: attributesChosen,
+      include: [{ model: Category, as: "category" }],
+      where: { user_id: userId },
     });
     return res.status(200).send({
       message: "Property Data Succesfully Retrieved",
@@ -89,12 +91,13 @@ export const editPropertyData = async (req, res) => {
     const { id } = req.params;
     console.log("PropertyEdit Server :", id);
 
-    const { name, description, image_url, category_id} = req.body;
+    const { name, description, image_url, category_id } = req.body;
+
 
     console.log(req.body);
 
     Property.update(
-      { name: name, description: description, image_url: image_url, category_id :category_id },
+      { name: name, description: description, image_url: image_url, category_id: category_id },
       { where: { id: id } }
     );
 
@@ -142,7 +145,7 @@ export const deletePropertyData = async (req, res) => {
     return res.status(204).send({
       message: "Property Data Succesfully Deleted",
     });
-  } catch(err) {
+  } catch (err) {
     return res.send({
       message: err.message,
     });

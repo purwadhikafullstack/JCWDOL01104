@@ -19,7 +19,7 @@ export default class QueryProperty {
 
   async getProperties(query) {
     const { city, limit } = query;
-    let params = { include: [{ model: Location }], limit: Number(limit) };
+    let params = { include: [{ model: Location }], limit: Number(limit) || 8 };
     if (city) {
       params = {
         include: [{ model: Location }],

@@ -21,6 +21,7 @@ const PORT = process.env.PORT || 8080;
 
 connetionMysql();
 passportConfig(passport);
+// invoicePdf();
 
 app.use(express.static("public"));
 app.use(express.json());
@@ -40,14 +41,10 @@ app.use("/auth", routes.authRoutes);
 app.use("/api/user", routes.userRoutes);
 app.use("/api/property", routes.propertyRoutes);
 app.use("/api/room", routes.roomRoutes);
+app.use("/api/order", routes.orderRoutes);
+
 
 app.use(errorHandler);
 app.use(notFound);
-
-// app.use("/api/productListData", productRoutes);
-
-
-
-console.log("Port Running")
 
 app.listen(PORT, () => console.log(`Server is Running on PORT:${PORT}`));
