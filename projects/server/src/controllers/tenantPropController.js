@@ -45,6 +45,7 @@ Property.belongsTo(User, {
 Property.sync();
 Room.sync();
 User.sync();
+User.sync();
 
 export const getPropertyData = async (req, res) => {
   try {
