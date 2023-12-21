@@ -3,6 +3,7 @@ import QueryUser from "./query-domain.js";
 import CommandUser from "./command-domain.js";
 import schema from "../../utils/schema.js";
 import utils from "../../utils/utils.js";
+import cron from "node-cron";
 
 const query = new QueryUser();
 const command = new CommandUser();
@@ -13,8 +14,8 @@ const getUsers = tryCatch(async (req, res) => {
 });
 
 const getUserById = tryCatch(async (req, res) => {
-  const params = req.params.userId;
-  const response = await query.getUserById(params);
+  const userId = req.user;
+  const response = await query.getUserById(userId);
   return utils.responseSuccess(res, response);
 });
 
@@ -59,9 +60,10 @@ const verifyEmail = tryCatch(async (req, res) => {
 });
 
 const updatePassword = tryCatch(async (req, res) => {
+  const userId = req.user;
   const payload = req.body;
   await utils.validateSchema(payload, schema.updatePassword);
-  const response = await command.updatePassword(payload);
+  const response = await command.updatePassword(payload, userId);
   return utils.responseSuccess(res, response);
 });
 
@@ -80,19 +82,25 @@ const updateResetPassword = tryCatch(async (req, res) => {
 });
 
 const updateUser = tryCatch(async (req, res) => {
-  const params = req.params.userId;
+  const userId = req.user;
   const payload = req.body;
   await utils.validateSchema(payload, schema.updateUser);
-  const response = await command.updateUser(payload, params);
+  const response = await command.updateUser(payload, userId);
   return utils.responseSuccess(res, response);
 });
 
 const uploadImage = tryCatch(async (req, res) => {
-  const params = req.params.userId;
+  const userId = req.user;
   const file = req.file;
-  const response = await command.uploadImage(file, params);
+  const response = await command.uploadImage(file, userId);
   return utils.responseSuccess(res, response);
 });
+
+const scheduler = async () => {
+  cron.schedule("* * * * *", async () => {
+    await command.refreshOtp();
+  });
+};
 
 export default {
   getUsers,
@@ -108,4 +116,5 @@ export default {
   updateResetPassword,
   updateUser,
   uploadImage,
+  scheduler,
 };

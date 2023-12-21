@@ -6,21 +6,20 @@ import Property from "../models/property.js";
 
 const attributesChosen = ["id", "name", "price", "description", "person"];
 
+// Property.hasMany(Room, {
+//   foreignKey: "property_id",
+//   sourceKey: "id",
+//   as: "rooms",
+//   hooks: true,
+//   onDelete: "CASCADE",
+// });
 
-Property.hasMany(Room, {
-  foreignKey: "property_id",
-  sourceKey: "id",
-  as: "rooms",
-  hooks: true,
-  onDelete: "CASCADE",
-});
-
-Room.belongsTo(Property, {
-  foreignKey: "property_id",
-  as: "property",
-  hooks: true,
-  onDelete: "CASCADE",
-});
+// Room.belongsTo(Property, {
+//   foreignKey: "property_id",
+//   as: "property",
+//   hooks: true,
+//   onDelete: "CASCADE",
+// });
 
 Room.sync();
 Property.sync();

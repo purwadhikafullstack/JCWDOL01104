@@ -40,6 +40,7 @@ app.use("/api/user", routes.userRoutes);
 app.use("/api/property", routes.propertyRoutes);
 app.use("/api/room", routes.roomRoutes);
 app.use("/api/order", routes.orderRoutes);
+app.use("/api/review", routes.reviewRoutes);
 
 app.use(errorHandler);
 app.use(notFound);

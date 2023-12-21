@@ -7,13 +7,14 @@ const router = Router();
 
 router.get("/", orderHandler.getOrders);
 router.get("/id/:orderId", orderHandler.getOrderById);
-router.get("/user/:userId", orderHandler.getOrderByUserId);
-router.get("/book-order/:roomId", orderHandler.getBookOrder);
+router.get("/user/", jwtAuth, orderHandler.getOrderByUserId);
+router.get("/book-order", orderHandler.getBookOrder);
 
-router.post("/book", orderHandler.bookOrder);
-router.post("/transaction", orderHandler.transaction);
-router.post("/expired", orderHandler.expiredOrder);
+router.post("/book", jwtAuth, orderHandler.bookOrder);
+router.post("/transaction", jwtAuth, orderHandler.transaction);
 
 router.put("/upload-image/:orderId", jwtAuth, upload, orderHandler.uploadImageTransaction);
+
+orderHandler.scheduler();
 
 export default router;

@@ -9,31 +9,31 @@ import Category from "../models/category.js";
 import User from "../models/user.js";
 
 const attributesChosen = ["id", "name", "description", "image_url", "category_id"];
-Category.hasMany(Property, {
-  foreignKey: "category_id",
-  sourceKey: "id",
-  as: "property",
-  hooks: true,
-});
+// Category.hasMany(Property, {
+//   foreignKey: "category_id",
+//   sourceKey: "id",
+//   as: "property",
+//   hooks: true,
+// });
 
-Property.belongsTo(Category, {
-  foreignKey: "category_id",
-  as: "category",
-  hooks: true,
-});
+// Property.belongsTo(Category, {
+//   foreignKey: "category_id",
+//   as: "category",
+//   hooks: true,
+// });
 
-User.hasMany(Property, {
-  foreignKey: "user_id",
-  sourceKey: "id",
-  as: "propertyOwned",
-  hooks: true,
-});
+// User.hasMany(Property, {
+//   foreignKey: "user_id",
+//   sourceKey: "id",
+//   as: "propertyOwned",
+//   hooks: true,
+// });
 
-Property.belongsTo(User, {
-  foreignKey: "user_id",
-  as: "user",
-  hooks: true,
-});
+// Property.belongsTo(User, {
+//   foreignKey: "user_id",
+//   as: "user",
+//   hooks: true,
+// });
 
 Property.sync();
 Room.sync();
