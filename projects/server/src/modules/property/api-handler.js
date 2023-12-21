@@ -25,10 +25,23 @@ const getPropertyById = tryCatch(async (req, res) => {
   return utils.responseSuccess(res, response);
 });
 
+const getPropertyFavorite = tryCatch(async (req, res) => {
+  const userId = req.user;
+  const response = await query.getPropertyFavorite(userId);
+  return utils.responseSuccess(res, response);
+});
+
 const addProperty = tryCatch(async (req, res) => {
   const payload = req.body;
   const response = await command.addProperty(payload);
   return utils.responseSuccess(res, response, "Success", 201);
 });
 
-export default { getLocations, getProperties, getPropertyById, addProperty };
+const setFavorite = tryCatch(async (req, res) => {
+  const payload = req.body;
+  const userId = req.user;
+  const response = await command.setFavorite(payload, userId);
+  return utils.responseSuccess(res, response);
+});
+
+export default { getLocations, getProperties, getPropertyById, getPropertyFavorite, addProperty, setFavorite };

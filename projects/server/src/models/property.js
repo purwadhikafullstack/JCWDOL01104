@@ -1,7 +1,5 @@
 import sequelize from "../config/db.js";
 import { DataTypes } from "sequelize";
-import Room from "./room.js";
-import Category from "./category.js";
 
 const Property = sequelize.define(
   "property",
@@ -13,9 +11,5 @@ const Property = sequelize.define(
   },
   { timestamps: false }
 );
-
-// Define Associations
-
-
 
 export default Property;

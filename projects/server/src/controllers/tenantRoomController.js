@@ -14,21 +14,20 @@ const attributesChosen = [
   "room_info",
 ];
 
+// Property.hasMany(Room, {
+//   foreignKey: "property_id",
+//   sourceKey: "id",
+//   as: "rooms",
+//   hooks: true,
+//   onDelete: "CASCADE",
+// });
 
-Property.hasMany(Room, {
-  foreignKey: "property_id",
-  sourceKey: "id",
-  as: "rooms",
-  hooks: true,
-  onDelete: "CASCADE",
-});
-
-Room.belongsTo(Property, {
-  foreignKey: "property_id",
-  as: "property",
-  hooks: true,
-  onDelete: "CASCADE",
-});
+// Room.belongsTo(Property, {
+//   foreignKey: "property_id",
+//   as: "property",
+//   hooks: true,
+//   onDelete: "CASCADE",
+// });
 
 Room.sync();
 Property.sync();

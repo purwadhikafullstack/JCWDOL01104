@@ -11,8 +11,8 @@ router.get("/google", passport.authenticate("google", { scope: ["pofile", "email
 router.get(
   "/google/oauth",
   passport.authenticate("google", {
-    successRedirect: process.env.CLIENT_LINK,
-    failureRedirect: "/login/failed",
+    successRedirect: `${process.env.CLIENT_LINK}/login-auth-success`,
+    failureRedirect: `${process.env.CLIENT_LINK}/login-auth-failed`,
   })
 );
 router.get("/logout", authHandler.logout);
