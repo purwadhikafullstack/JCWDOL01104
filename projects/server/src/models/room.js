@@ -1,6 +1,5 @@
 import sequelize from "../config/db.js";
 import { DataTypes } from "sequelize";
-import Property from "./property.js";
 
 const Room = sequelize.define(
   "room",

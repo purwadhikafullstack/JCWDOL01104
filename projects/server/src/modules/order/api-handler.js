@@ -34,7 +34,6 @@ const getBookOrder = tryCatch(async (req, res) => {
 const bookOrder = tryCatch(async (req, res) => {
   const payload = req.body;
   const userId = req.user;
-  console.log("user", userId);
   await utils.validateSchema(payload, schema.bookOrder);
   const response = await command.bookOrder(payload, userId);
   return utils.responseSuccess(res, response, "Success Register", 201);

@@ -45,8 +45,6 @@ export default class CommandUser {
         role: userData.role.role,
       };
       const token = jwt.sign(dataUser, process.env.SECRET_KEY, { expiresIn: "30d" });
-      const link = `${process.env.CLIENT_LINK}/auth?token=${token}`;
-      // return link;
       return token;
     }
   }
