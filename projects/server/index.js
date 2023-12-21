@@ -5,10 +5,10 @@ import helmet from "helmet";
 import passport from "passport";
 import session from "express-session";
 import propertyRoutes from "../server/src/routers/property.router.js";
-import roomRoutes from "../server/src/routers/room.router.js"
-import categoryRoutes from "../server/src/routers/category.router.js"
-import specialPriceRoutes from "./src/routers/specialPrice.router.js"
-import unavailableRoomRoutes from "./src/routers/unavailableRoom.router.js"
+import roomRoutes from "../server/src/routers/room.router.js";
+import categoryRoutes from "../server/src/routers/category.router.js";
+import specialPriceRoutes from "./src/routers/specialPrice.router.js";
+import unavailableRoomRoutes from "./src/routers/unavailableRoom.router.js";
 import { connetionMysql } from "./src/config/db.js";
 import { corsConfig, sessionConfig } from "./src/config/config.js";
 import errorHandler from "./src/utils/error-handler.js";
@@ -32,17 +32,17 @@ app.use(helmet());
 app.use(session(sessionConfig));
 
 app.use("/api/propertyList", propertyRoutes);
-app.use("/api/categoryList",categoryRoutes);
-app.use ("/api/roomList",roomRoutes);
-app.use("/api/specialPrice",specialPriceRoutes)
-app.use("/api/disableRoom",unavailableRoomRoutes);
+app.use("/api/categoryList", categoryRoutes);
+app.use("/api/roomList", roomRoutes);
+app.use("/api/specialPrice", specialPriceRoutes);
+app.use("/api/disableRoom", unavailableRoomRoutes);
 app.use("/api/secret/seed", routes.seedRoutes);
 app.use("/auth", routes.authRoutes);
 app.use("/api/user", routes.userRoutes);
 app.use("/api/property", routes.propertyRoutes);
 app.use("/api/room", routes.roomRoutes);
 app.use("/api/order", routes.orderRoutes);
-
+app.use("/api/review", routes.reviewRoutes);
 
 app.use(errorHandler);
 app.use(notFound);

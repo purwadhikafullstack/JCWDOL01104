@@ -21,7 +21,6 @@ export default (passport) => {
       },
       async function (accessToken, refreshToken, profile, callback) {
         const response = await command.findOrCreate(profile);
-        // console.log("response", response);
         callback(null, response);
       }
     )

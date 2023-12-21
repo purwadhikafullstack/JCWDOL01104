@@ -7,10 +7,11 @@ import QueryUser from "../../modules/user/query-domain.js";
 import QueryRoom from "../../modules/room/query-domain.js";
 import QueryProperty from "../../modules/property/query-domain.js";
 import mailer from "../../helpers/mailer.js";
+import { Op } from "sequelize";
 import { v4 as uuidv4 } from "uuid";
 import { FormatToIDR } from "../../helpers/helpers.js";
 
-// Order flow --> unpaid | unconfirm | success | cancel | rejected
+// Order flow --> unpaid | unconfirm | success | expired | cancel | rejected
 export default class CommandOrder {
   constructor() {
     this.order = new Orders();
@@ -20,8 +21,8 @@ export default class CommandOrder {
     this.queryRoom = new QueryRoom();
   }
 
-  async bookOrder(payload) {
-    const { startDate, endDate, guest, userId, roomId } = payload;
+  async bookOrder(payload, userId) {
+    const { startDate, endDate, guest, roomId } = payload;
 
     const oneDay = 24 * 36 * 1e5;
     const firstDate = new Date(startDate);
@@ -46,7 +47,6 @@ export default class CommandOrder {
       userId: userId,
       roomId: roomId,
       status: "unpaid",
-      expired: new Date().getTime() + 2 * 36 * 1e5,
     };
     const order = await this.order.insertOneOrder(data);
 
@@ -100,12 +100,10 @@ export default class CommandOrder {
     return snap.createTransaction(parameter);
   }
 
-  async expiredOrder(payload) {
-    const params = { where: { id: orderId } };
-    const { orderId } = payload;
-    const getOrder = await this.query.getOrderById(orderId);
-    if (!getOrder) throw new AppError("Order not Found", 404);
-    if (getOrder.dataValues.status === "unpaid") await this.order.updateOneOrder({ status: "expired" }, params);
+  async expiredOrder() {
+    const afterTwoHour = new Date(Date.now() - 2 * 36e5);
+    const params = { where: { status: "unpaid", createdAt: { [Op.lte]: afterTwoHour } } };
+    await this.order.updateOneOrder({ status: "expired" }, params);
   }
 
   async uploadImageTransaction(file, orderId) {

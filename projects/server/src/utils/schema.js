@@ -61,7 +61,6 @@ const updatePassword = joi.object({
     .required()
     .label("Confirm password")
     .options({ messages: { "any.only": "{{#label}} does not match" } }),
-  userId: joi.string().required(),
 });
 
 const email = joi.object({
@@ -82,7 +81,6 @@ const resetPassword = joi.object({
     .label("Confirm password")
     .options({ messages: { "any.only": "{{#label}} does not match" } }),
   token: joi.string().required(),
-  userId: joi.string().required(),
 });
 
 const updateUser = joi.object({
@@ -107,8 +105,18 @@ const bookOrder = joi.object({
   endDate: joi.number().required(),
   guest: joi.number().required(),
   totalPrice: joi.number().required(),
-  userId: joi.alternatives().try(joi.string(), joi.number()).required(),
   roomId: joi.alternatives().try(joi.string(), joi.number()).required(),
+});
+
+const addReview = joi.object({
+  review: joi.string().required(),
+  clean: joi.number().integer().max(5).min(1).required(),
+  security: joi.number().integer().max(5).min(1).required(),
+  satisfied: joi.number().integer().max(5).min(1).required(),
+  service: joi.number().integer().max(5).min(1).required(),
+  propertyId: joi.number().required(),
+  roomId: joi.number().required(),
+  userId: joi.number().required(),
 });
 
 const schema = {
@@ -121,5 +129,6 @@ const schema = {
   resetPassword,
   updateUser,
   bookOrder,
+  addReview,
 };
 export default schema;

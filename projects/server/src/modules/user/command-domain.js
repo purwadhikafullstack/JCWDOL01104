@@ -45,8 +45,6 @@ export default class CommandUser {
         role: userData.role.role,
       };
       const token = jwt.sign(dataUser, process.env.SECRET_KEY, { expiresIn: "30d" });
-      const link = `${process.env.CLIENT_LINK}/auth?token=${token}`;
-      // return link;
       return token;
     }
   }
@@ -80,24 +78,33 @@ export default class CommandUser {
     if (!checkPwd) throw new AppError("Email atau password tidak sesuai", 403);
     const data = { id: getUser.id, image_url: getUser.image_url, role: getUser.role.role };
     const token = jwt.sign(data, process.env.SECRET_KEY, { expiresIn: "30d" });
-    console.log(token)
     return token;
   }
 
   async requestOtp(payload) {
     const { email } = payload;
+    const params = { where: { email: email } };
     const otp = otpGenerator.generate(6, { lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false });
     const getUser = await this.query.getUserByEmail(email);
     if (!getUser) throw new AppError("User not Found");
-    const getOtp = await this.otp.findOneOtp({ where: { email: email } });
+    const getOtp = await this.otp.findOneOtp(params);
     if (!getOtp) await this.otp.inserOnetOtp({ email: email, otp: otp });
+
+    if (getOtp.dataValues.max_request >= 5) throw new AppError("Maksimal 5 Request Per Hari", 400);
     if (getOtp && getOtp.dataValues.otpExpired < Date.now()) {
-      await this.otp.deleteOnetOtp({ where: { email: email } });
+      await this.otp.deleteOnetOtp(params);
       throw new AppError("Otp tidak berlaku", 403);
     }
+    const updateOtp = { otp: otp, username: getUser.dataValues.name, max_request: getOtp.dataValues.max_request + 1 };
     const content = { otp: otp, username: getUser.dataValues.name };
-    if (getOtp) await this.otp.updateOnetOtp(content, { where: { email: email } });
+    if (getOtp) await this.otp.updateOnetOtp(updateOtp, params);
     await mailer.verifyEmail(email, content);
+  }
+
+  async refreshOtp() {
+    const afterOneDay = new Date(Date.now() - 24 * 36e5);
+    const params = { where: { verified: false, refresh_otp: { [Op.lte]: afterOneDay } } };
+    await this.order.updateOneOrder({ max_request: 0 }, params);
   }
 
   async verifyEmail(payload) {
@@ -109,8 +116,8 @@ export default class CommandUser {
     await this.otp.deleteOnetOtp({ where: { [Op.and]: [{ email: email }, { otp: otp }] } });
   }
 
-  async updatePassword(payload) {
-    const { oldPassword, newPassword, confirmPassword, userId } = payload;
+  async updatePassword(payload, userId) {
+    const { oldPassword, newPassword, confirmPassword } = payload;
     const getUser = await this.query.getUserById(userId);
     if (!getUser) throw new AppError("User not found", 404);
     const checkPwd = await bcrypt.compareHash(oldPassword, getUser.dataValues.password);

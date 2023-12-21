@@ -5,12 +5,12 @@ const Review = sequelize.define(
   "review",
   {
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-    name: { type: DataTypes.STRING },
-    review: { type: DataTypes.STRING },
-    clean: { type: DataTypes.NUMBER },
-    security: { type: DataTypes.NUMBER },
-    comfort: { type: DataTypes.NUMBER },
-    satisfied: { type: DataTypes.NUMBER },
+    review: { type: DataTypes.TEXT },
+    clean: { type: DataTypes.INTEGER },
+    security: { type: DataTypes.INTEGER },
+    satisfied: { type: DataTypes.INTEGER },
+    service: { type: DataTypes.INTEGER },
+    createdAt: { type: DataTypes.DATE },
   },
   { updatedAt: false }
 );

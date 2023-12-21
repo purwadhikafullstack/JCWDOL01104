@@ -10,7 +10,6 @@ import User from "../models/user.js";
 import upload from "../helpers/upload.js";
 import fs from "fs";
 
-
 const attributesChosen = ["id", "name", "description", "image_url", "category_id"];
 Category.hasMany(Property, {
   foreignKey: "category_id",
@@ -38,10 +37,6 @@ Property.belongsTo(User, {
   hooks: true,
 });
 
-
-
-
-
 Property.sync();
 Room.sync();
 User.sync();
@@ -50,7 +45,7 @@ User.sync();
 export const getPropertyData = async (req, res) => {
   try {
     console.log("Get Property Data");
-    const userId=req.user;
+    const userId = req.user;
     const result = await Property.findAll({
       attributes: attributesChosen,
       include: [{ model: Category, as: "category" }],
@@ -69,11 +64,17 @@ export const getPropertyData = async (req, res) => {
 
 export const postPropertyData = async (req, res) => {
   try {
-    const { name, description, category_id} = req.body;
-    const userId=req.user;
+    const { name, description, category_id } = req.body;
+    const userId = req.user;
 
-    const imageURL=`${process.env.SERVER_LINK}/${req.file.filename}`
-    const result = await Property.create({name: name, description: description, image_url: imageURL, category_id :category_id ,user_id:userId});
+    const imageURL = `${process.env.SERVER_LINK}/${req.file.filename}`;
+    const result = await Property.create({
+      name: name,
+      description: description,
+      image_url: imageURL,
+      category_id: category_id,
+      user_id: userId,
+    });
 
     return res.status(202).send({
       message: "Property Data Succesfully Posted",
@@ -93,7 +94,6 @@ export const editPropertyData = async (req, res) => {
 
     const { name, description, image_url, category_id } = req.body;
 
-
     console.log(req.body);
 
     Property.update(
@@ -112,28 +112,27 @@ export const editPropertyData = async (req, res) => {
 };
 
 export const deletePropertyData = async (req, res) => {
-  
   try {
     const { id } = req.params;
-   
+
     const property = await Property.findByPk(id);
-  
-    const room = await Room.findAll({attributes:["image_url"], where :{property_id:id}})
-  
+
+    const room = await Room.findAll({ attributes: ["image_url"], where: { property_id: id } });
+
     //Deleting Property Image
     const path = property.image_url.substring(22);
-    fs.unlink(`public/${path}`,(err) => {
+    fs.unlink(`public/${path}`, (err) => {
       if (err) console.log(err);
     });
-    console.log("Property File Deleted")
+    console.log("Property File Deleted");
     //Deleting Room Images
-    room.forEach((value)=>{
-      const pathRoom= value.dataValues.image_url.substring(22);
-      fs.unlink(`public/${pathRoom}`,(err) => {
+    room.forEach((value) => {
+      const pathRoom = value.dataValues.image_url.substring(22);
+      fs.unlink(`public/${pathRoom}`, (err) => {
         if (err) console.log(err);
       });
-    })
-    console.log("Room File deleted")
+    });
+    console.log("Room File deleted");
 
     await Property.destroy({
       where: {

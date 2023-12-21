@@ -8,6 +8,11 @@ export default class Locations {
     return result;
   }
 
+  async findOneLocation(params) {
+    const result = await Location.findOne(params);
+    return result;
+  }
+
   async insertOneLocation(data) {
     const result = await Location.create(data);
     return result;
