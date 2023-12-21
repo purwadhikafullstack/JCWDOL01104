@@ -8,6 +8,7 @@ import propertyRoutes from "../server/src/routers/property.router.js";
 import roomRoutes from "../server/src/routers/room.router.js";
 import categoryRoutes from "../server/src/routers/category.router.js";
 
+
 import { invoicePdf } from "./src/helpers/mailer.js";
 import { connetionMysql } from "./src/config/db.js";
 import { corsConfig, sessionConfig } from "./src/config/config.js";
@@ -41,6 +42,7 @@ app.use("/api/property", routes.propertyRoutes);
 app.use("/api/room", routes.roomRoutes);
 app.use("/api/order", routes.orderRoutes);
 app.use("/api/review", routes.reviewRoutes);
+
 
 app.use(errorHandler);
 app.use(notFound);

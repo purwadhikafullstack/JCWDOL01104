@@ -8,6 +8,7 @@ import Room from "../models/room.js";
 import Category from "../models/category.js";
 import User from "../models/user.js";
 
+
 const attributesChosen = ["id", "name", "description", "image_url", "category_id"];
 // Category.hasMany(Property, {
 //   foreignKey: "category_id",
@@ -53,6 +54,7 @@ export const getPropertyData = async (req, res) => {
 
     console.log(result);
 
+
     // const dataValuesArray = result.map((result) => result.dataValues);
 
     return res.status(200).send({
@@ -73,6 +75,7 @@ const property = async (data) => {
 
 export const postPropertyData = async (req, res) => {
   try {
+
     const { name, description, image_url, category_id } = req.body;
     const userId = req.params.id;
     const result = await Property.create({
@@ -100,6 +103,7 @@ export const editPropertyData = async (req, res) => {
     console.log("PropertyEdit Server :", id);
 
     const { name, description, image_url, category_id } = req.body;
+
 
     console.log(req.body);
 
