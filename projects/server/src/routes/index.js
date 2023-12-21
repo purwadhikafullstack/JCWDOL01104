@@ -6,4 +6,5 @@ import roomRoutes from "./room.js";
 import orderRoutes from "./order.js";
 
 const routes = { seedRoutes, authRoutes, userRoutes, propertyRoutes, roomRoutes, orderRoutes };
+
 export default routes;

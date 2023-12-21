@@ -10,6 +10,7 @@ const Room = sequelize.define(
     price: { type: DataTypes.INTEGER },
     description: { type: DataTypes.TEXT },
     guest: { type: DataTypes.INTEGER },
+    room_info: { type: DataTypes.STRING },
     image_url: { type: DataTypes.TEXT },
   },
   { timestamps: false }
