@@ -14,20 +14,22 @@ const rateLimit = setRateLimiter({
 const router = Router();
 
 router.get("/", userHandler.getUsers);
-router.get("/id/:userId", userHandler.getUserById);
+router.get("/id", jwtAuth, userHandler.getUserById);
 router.get("/email/:email", userHandler.getUserByEmail);
 router.get("/phone/:emailOrPhoneNumber", userHandler.getUserByEmailOrPhoneNumber);
 
 router.post("/register", userHandler.register);
 router.post("/login", userHandler.login);
-router.post("/otp/request", rateLimit, userHandler.requestOtp);
+router.post("/otp/request", jwtAuth, rateLimit, userHandler.requestOtp);
 router.post("/verify-email", jwtAuth, userHandler.verifyEmail);
 
 router.post("/update-password", jwtAuth, userHandler.updatePassword);
-router.post("/reset-password/request", userHandler.resetPassword);
-router.post("/reset-password", userHandler.updateResetPassword);
+router.post("/reset-password/request", jwtAuth, userHandler.resetPassword);
+router.post("/reset-password", jwtAuth, userHandler.updateResetPassword);
 
-router.put("/:userId", jwtAuth, userHandler.updateUser);
-router.put("/upload-image/:userId", jwtAuth, upload, userHandler.uploadImage);
+router.put("/update", jwtAuth, userHandler.updateUser);
+router.put("/upload-image", jwtAuth, upload, userHandler.uploadImage);
+
+userHandler.scheduler();
 
 export default router;

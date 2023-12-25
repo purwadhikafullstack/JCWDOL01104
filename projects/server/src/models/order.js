@@ -4,7 +4,6 @@ import { DataTypes } from "sequelize";
 const Order = sequelize.define(
   "order",
   {
-    // id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
     id: { type: DataTypes.STRING, primaryKey: true },
     status: { type: DataTypes.ENUM(["unpaid", "unconfirm", "success", "expired", "cancel", "rejected"]) },
     start_date: { type: DataTypes.BIGINT },
@@ -12,7 +11,7 @@ const Order = sequelize.define(
     total_price: { type: DataTypes.INTEGER },
     guest: { type: DataTypes.INTEGER },
     image_url: { type: DataTypes.TEXT },
-    expired: { type: DataTypes.BIGINT },
+    createdAt: { type: DataTypes.DATE },
   },
   { updatedAt: false }
 );

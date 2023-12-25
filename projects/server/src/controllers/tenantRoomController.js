@@ -117,6 +117,7 @@ export const updateRoomData = async (req, res) => {
 };
 
 export const deleteRoomData = async (req, res) => {
+
   try {
     const { id } = req.params;
     const room = await Room.findByPk(id);
@@ -217,7 +218,7 @@ export const getOccupancyData = async (req, res) => {
     return res.send({
       message: "Error acquiring occupancy data",
     });
-  }
+  }  
 };
 
 // const result = await User.findByPk(userId, {

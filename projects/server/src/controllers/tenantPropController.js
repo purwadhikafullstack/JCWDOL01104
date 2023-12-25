@@ -93,7 +93,6 @@ export const editPropertyData = async (req, res) => {
 
     const { name, description, image_url, category_id } = req.body;
 
-
     console.log(req.body);
 
     Property.update(

@@ -19,5 +19,10 @@
   },
   "workspaces": [
     "projects/*"
-  ]
+  ],
+  "dependencies": {
+    "node-schedule": "^2.1.1",
+    "redis": "^4.6.11",
+    "socket.io": "^4.7.2"
+  }
 }

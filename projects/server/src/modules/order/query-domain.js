@@ -9,8 +9,9 @@ export default class QueryOrder {
     this.order = new Order();
   }
   async getOrders(query) {
-    const params = { include: [{ model: User }, { model: Room }] };
-    const data = await this.order.findAllOrder(params);
+    const { limit } = query;
+    const params = { include: [{ model: User }, { model: Room }], limit: limit || 6 };
+    const data = await this.order.findAndCountAllOrder(params);
     return data;
   }
 
@@ -21,14 +22,41 @@ export default class QueryOrder {
   }
 
   async getOrderByUserId(userId) {
-    const params = { include: [{ model: User }, { model: Room }], where: { userId: userId } };
+    const params = {
+      include: [{ model: Room }],
+      where: { userId: userId },
+      order: [["createdAt", "desc"]],
+    };
+    const data = await this.order.findAndCountAllOrder(params);
+    return data;
+  }
+
+  async getOrderRoom(roomId) {
+    const params = {
+      include: [{ model: Room }],
+      where: { roomId: roomId, start_date: { [Op.gt]: new Date() } },
+    };
     const data = await this.order.findAllOrder(params);
     return data;
   }
 
-  async getBookOrder(roomId) {
-    const params = { include: [{ model: Room }], where: { roomId: 1, start_date: { [Op.gt]: new Date() } } };
+  async getBookOrder(query) {
+    const { roomId, start, end } = query;
+    const params = {
+      where: {
+        roomId: roomId,
+        [Op.and]: [
+          {
+            start_date: { [Op.gte]: start },
+            end_date: { [Op.lte]: end },
+            [Op.or]: [{ status: "unconfirm" }, { status: "success" }, { status: "unpaid" }, { status: "rejected" }],
+          },
+        ],
+      },
+    };
+
     const data = await this.order.findAllOrder(params);
-    return data;
+    if (data.length > 0) return "exist";
+    else return "not exixt";
   }
 }

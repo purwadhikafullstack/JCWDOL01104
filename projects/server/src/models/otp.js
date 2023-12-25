@@ -7,7 +7,9 @@ const Otp = sequelize.define(
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
     email: { type: DataTypes.STRING },
     otp: { type: DataTypes.STRING },
-    otpExpired: { type: DataTypes.BIGINT, defaultValue: Date.now() + 24 * 36 * 1e5 },
+    verified: { type: DataTypes.BOOLEAN, defaultValue: false },
+    max_request: { type: DataTypes.INTEGER, defaultValue: 0 },
+    refresh_otp: { type: DataTypes.BIGINT, defaultValue: Date.now() + 24 * 36 * 1e5 },
   },
   { timestamps: false }
 );
