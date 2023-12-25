@@ -11,7 +11,6 @@ const Room = sequelize.define(
     guest: { type: DataTypes.INTEGER },
     image_url:{type: DataTypes.STRING},
     room_info: {type: DataTypes.STRING},
-    image_url: { type: DataTypes.TEXT },
   },
   { timestamps: false }
 );

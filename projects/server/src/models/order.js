@@ -6,7 +6,7 @@ const Order = sequelize.define(
   {
     // id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
     id: { type: DataTypes.STRING, primaryKey: true },
-    status: { type: DataTypes.ENUM(["unpaid", "unconfirm", "sussess", "expired", "cancel", "rejected"]) },
+    status: { type: DataTypes.ENUM(["unpaid", "unconfirm", "success", "expired", "cancel", "rejected"]) },
     start_date: { type: DataTypes.BIGINT },
     end_date: { type: DataTypes.BIGINT },
     total_price: { type: DataTypes.INTEGER },
