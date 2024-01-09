@@ -5,7 +5,6 @@ import Review from "../../models/review.js";
 
 Room.belongsTo(Property);
 Room.hasMany(Order);
-
 Room.hasMany(Review);
 
 export default class Rooms {
