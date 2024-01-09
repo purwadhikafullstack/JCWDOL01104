@@ -4,24 +4,32 @@ import QueryProperty from "./query-domain.js";
 import Favorites from "../favorite/repositories.js";
 import Property from "../../models/property.js";
 import User from "../../models/user.js";
+import Facilities from "../../modules/facility/repositories.js";
 import AppError from "../../utils/app-error.js";
+import { generateFacility } from "../../helpers/helpers.js";
 
 export default class CommandProperty {
   constructor() {
     this.property = new Properties();
     this.query = new QueryProperty();
     this.favorite = new Favorites();
+    this.facility = new Facilities();
   }
 
   async addProperty(payload) {
-    const { name, description, imageUrl, locationId } = payload;
+    const { name, description, imageUrl, userId, locationId, categoryId } = payload;
     const data = {
       name: name,
       description: description,
       image_url: imageUrl,
+      userId: userId,
       locationId: locationId,
+      categoryId: categoryId,
     };
-    await this.property.insertOneProperty(data);
+
+    const property = await this.property.insertOneProperty(data);
+    const facility = generateFacility(property.dataValues.id, categoryId);
+    await this.facility.insertManyFacilityList(facility);
   }
 
   async setFavorite(payload, userId) {

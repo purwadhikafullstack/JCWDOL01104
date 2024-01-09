@@ -21,6 +21,7 @@ const getRoomById = tryCatch(async (req, res) => {
 
 const addRoom = tryCatch(async (req, res) => {
   const payload = req.body;
+  await utils.validateSchema(payload, schema.addRoom);
   const response = await command.addRoom(payload);
   return utils.responseSuccess(res, response, "Success", 201);
 });

@@ -33,12 +33,14 @@ const getPropertyFavorite = tryCatch(async (req, res) => {
 
 const addProperty = tryCatch(async (req, res) => {
   const payload = req.body;
+  await utils.validateSchema(payload, schema.addProperty);
   const response = await command.addProperty(payload);
   return utils.responseSuccess(res, response, "Success", 201);
 });
 
 const setFavorite = tryCatch(async (req, res) => {
   const payload = req.body;
+  await utils.validateSchema(payload, schema.propertyId);
   const userId = req.user;
   const response = await command.setFavorite(payload, userId);
   return utils.responseSuccess(res, response);

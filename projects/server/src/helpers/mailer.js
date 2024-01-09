@@ -20,15 +20,15 @@ const pathInvoice = "./src/helpers/template/invoice.html";
 const pathProveTransaction = "./src/helpers/template/prove-transaction.html";
 
 const dummyData = {
-  name: "Adam",
+  username: "Adamss",
+  orderId: "sdafa",
   propertyName: "Luxury Apartment, 123 Main St",
   propertyRoom: "Luxury Apartment, 123 Main St",
-  lengthOfStay: 3,
-  pricePerMonth: 2000,
-  totalAmount: 6000,
-  businessEmail: "contact@example.com",
-  description: "Monthly rent payment for a luxury apartment",
-  invoiceNumber: "INV123456",
+  roomInfo: "no smoking",
+  guest: 10,
+  numberOfNight: 3,
+  price: 240000,
+  totalPrice: 6000,
 };
 
 export const invoicePdf = async (content) => {
@@ -80,6 +80,7 @@ const resetPassword = async (email, content) => {
 };
 
 const invoice = async (email, content) => {
+  console.log("mai;", content);
   const temp = fs.readFileSync(pathProveTransaction, "utf8");
   const body = mustache.render(temp, content);
   const mailOpt = {

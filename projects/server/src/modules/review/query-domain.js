@@ -23,42 +23,27 @@ export default class QueryReview {
     const paramsReview = {
       include: [{ model: Room }, { model: User }],
       where: { propertyId: propertyId },
-      limit: 4,
+      // limit: 4,
       order: [["createdAt", "desc"]],
     };
 
     const data = await this.review.findAndCountAllReview(paramsScore);
     const reviews = await this.review.findAndCountAllReview(paramsReview);
 
-    const clean = (
-      data.rows.length > 0
-        ? data.rows.reduce((a, b) => {
-            return a + b["clean"];
-          }, 0) / data.count
-        : 0
-    ).toFixed(1);
-    const security = (
-      data.rows.length > 0
-        ? data.rows.reduce((a, b) => {
-            return a + b["security"];
-          }, 0) / data.count
-        : 0
-    ).toFixed(1);
-    const service = (
-      data.rows.length > 0
-        ? data.rows.reduce((a, b) => {
-            return a + b["service"];
-          }, 0) / data.count
-        : 0
-    ).toFixed(1);
-    const satisfied = (
-      data.rows.length > 0
-        ? data.rows.reduce((a, b) => {
-            return a + b["satisfied"];
-          }, 0) / data.count
-        : 0
-    ).toFixed(1);
+    const countScore = (table) => {
+      return (
+        data.rows.length > 0
+          ? data.rows.reduce((a, b) => {
+              return a + b[table];
+            }, 0) / data.count
+          : 0
+      ).toFixed(1);
+    };
 
+    const clean = countScore("clean");
+    const security = countScore("security");
+    const service = countScore("service");
+    const satisfied = countScore("satisfied");
     const rating = ((Number(clean) + Number(security) + Number(service) + Number(satisfied)) / 4).toFixed(1);
     const score = { rating, clean, security, service, satisfied };
 
@@ -70,36 +55,22 @@ export default class QueryReview {
     const params = {
       where: roomId,
     };
-    const data = await this.review.findAndCountAllReview(params);
-    const clean = (
-      data.rows.length > 0
-        ? data.rows.reduce((a, b) => {
-            return a + b["clean"];
-          }, 0) / data.count
-        : 0
-    ).toFixed(1);
-    const security = (
-      data.rows.length > 0
-        ? data.rows.reduce((a, b) => {
-            return a + b["security"];
-          }, 0) / data.count
-        : 0
-    ).toFixed(1);
-    const service = (
-      data.rows.length > 0
-        ? data.rows.reduce((a, b) => {
-            return a + b["service"];
-          }, 0) / data.count
-        : 0
-    ).toFixed(1);
-    const satisfied = (
-      data.rows.length > 0
-        ? data.rows.reduce((a, b) => {
-            return a + b["satisfied"];
-          }, 0) / data.count
-        : 0
-    ).toFixed(1);
 
+    const data = await this.review.findAndCountAllReview(params);
+    const countScore = (table) => {
+      return (
+        data.rows.length > 0
+          ? data.rows.reduce((a, b) => {
+              return a + b[table];
+            }, 0) / data.count
+          : 0
+      ).toFixed(1);
+    };
+
+    const clean = countScore("clean");
+    const security = countScore("security");
+    const service = countScore("service");
+    const satisfied = countScore("satisfied");
     const rating = ((Number(clean) + Number(security) + Number(service) + Number(satisfied)) / 4).toFixed(1);
     const totalReview = data.count;
 

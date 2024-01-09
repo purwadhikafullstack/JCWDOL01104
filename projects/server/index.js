@@ -8,8 +8,6 @@ import propertyRoutes from "../server/src/routers/property.router.js";
 import roomRoutes from "../server/src/routers/room.router.js";
 import categoryRoutes from "../server/src/routers/category.router.js";
 
-
-import { invoicePdf } from "./src/helpers/mailer.js";
 import { connetionMysql } from "./src/config/db.js";
 import { corsConfig, sessionConfig } from "./src/config/config.js";
 import errorHandler from "./src/utils/error-handler.js";
@@ -22,7 +20,6 @@ const PORT = process.env.PORT || 8080;
 
 connetionMysql();
 passportConfig(passport);
-// invoicePdf();
 
 app.use(express.static("public"));
 app.use(express.json());
@@ -42,7 +39,6 @@ app.use("/api/property", routes.propertyRoutes);
 app.use("/api/room", routes.roomRoutes);
 app.use("/api/order", routes.orderRoutes);
 app.use("/api/review", routes.reviewRoutes);
-
 
 app.use(errorHandler);
 app.use(notFound);

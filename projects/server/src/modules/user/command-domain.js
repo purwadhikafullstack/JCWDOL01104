@@ -45,8 +45,6 @@ export default class CommandUser {
         role: userData.role.role,
       };
       const token = jwt.sign(dataUser, process.env.SECRET_KEY, { expiresIn: "30d" });
-      const link = `${process.env.CLIENT_LINK}/auth?token=${token}`;
-      // return link;
       return token;
     }
   }
@@ -85,27 +83,26 @@ export default class CommandUser {
 
   async requestOtp(payload) {
     const { email } = payload;
-    const params = { where: { email: email } };
+    const params = { where: { [Op.and]: [{ email: email, email_verified: false }] } };
     const otp = otpGenerator.generate(6, { lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false });
+    const afterOneDay = new Date(Date.now() + 24 * 36e5).setHours(0, 0, 0, 0);
+
     const getUser = await this.query.getUserByEmail(email);
     if (!getUser) throw new AppError("User not Found");
+    if (getUser.dataValues.email_verified === true) throw new AppError("Email has been Verified", 400);
+
     const getOtp = await this.otp.findOneOtp(params);
     if (!getOtp) await this.otp.inserOnetOtp({ email: email, otp: otp });
-
     if (getOtp.dataValues.max_request >= 5) throw new AppError("Maksimal 5 Request Per Hari", 400);
-    if (getOtp && getOtp.dataValues.otpExpired < Date.now()) {
-      await this.otp.deleteOnetOtp(params);
-      throw new AppError("Otp tidak berlaku", 403);
-    }
-    const updateOtp = { otp: otp, username: getUser.dataValues.name, max_request: getOtp.dataValues.max_request + 1 };
+
+    const updateOtp = { otp: otp, max_request: getOtp.dataValues.max_request + 1, refresh_otp: afterOneDay };
     const content = { otp: otp, username: getUser.dataValues.name };
     if (getOtp) await this.otp.updateOnetOtp(updateOtp, params);
     await mailer.verifyEmail(email, content);
   }
 
   async refreshOtp() {
-    const afterOneDay = new Date(Date.now() - 24 * 36e5);
-    const params = { where: { verified: false, refresh_otp: { [Op.lte]: afterOneDay } } };
+    const params = { where: { email_verified: false, refresh_otp: { [Op.lte]: Date.now() } } };
     await this.order.updateOneOrder({ max_request: 0 }, params);
   }
 
@@ -113,6 +110,7 @@ export default class CommandUser {
     const { email, otp } = payload;
     const getOtp = await this.otp.findOneOtp({ where: { [Op.and]: [{ email: email }, { otp: otp }] } });
     if (!getOtp) throw new AppError("Otp tidak valid", 403);
+    if (Date.now() > getOtp.dataValues.refresh_otp) throw new AppError("Otp tidak berlaku", 400);
     const updateData = { email_verified: true };
     await this.user.updateOneUser(updateData, { where: { email: email } });
     await this.otp.deleteOnetOtp({ where: { [Op.and]: [{ email: email }, { otp: otp }] } });
@@ -138,6 +136,7 @@ export default class CommandUser {
     const { email } = payload;
     const getUser = await this.query.getUserByEmail(email);
     if (!getUser) throw new AppError("User not found", 404);
+    if (!getUser.dataValues.password) throw new AppError("Tidak bisa reset password", 400);
     const token = await bcrypt.generateHash(String(getUser.dataValues.id));
     const link = `${process.env.CLIENT_LINK}/reset-password?token=${token}&userId=${getUser.dataValues.id}`;
     const username = getUser.dataValues.name;

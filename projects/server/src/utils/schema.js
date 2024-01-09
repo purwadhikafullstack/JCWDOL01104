@@ -100,6 +100,25 @@ const updateUser = joi.object({
   birthdate: joi.number().allow(),
 });
 
+const addProperty = joi.object({
+  name: joi.string().required(),
+  description: joi.string().required(),
+  imageUrl: joi.string().required(),
+  userId: joi.number().required(),
+  locationId: joi.number().required(),
+  categoryId: joi.number().required(),
+});
+
+const addRoom = joi.object({
+  name: joi.string().required(),
+  price: joi.number().required(),
+  description: joi.string().required(),
+  guest: joi.number().required(),
+  roomInfo: joi.string().required(),
+  imageUrl: joi.string().required(),
+  propertyId: joi.number().required(),
+});
+
 const bookOrder = joi.object({
   startDate: joi.number().required(),
   endDate: joi.number().required(),
@@ -119,6 +138,14 @@ const addReview = joi.object({
   userId: joi.number().required(),
 });
 
+const propertyId = joi.object({
+  propertyId: joi.number().required(),
+});
+
+const orderId = joi.object({
+  orderId: joi.string().required(),
+});
+
 const schema = {
   register,
   login,
@@ -128,7 +155,11 @@ const schema = {
   email,
   resetPassword,
   updateUser,
+  addProperty,
+  addRoom,
   bookOrder,
   addReview,
+  propertyId,
+  orderId,
 };
 export default schema;
