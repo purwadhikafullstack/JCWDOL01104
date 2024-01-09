@@ -1,20 +1,20 @@
 import Property from "../models/property.js";
 import SpecialPrice from "../models/special-price.js";
 
-Property.hasMany(SpecialPrice, {
-  foreignKey: "property_id",
-  sourceKey: "id",
-  as: "special_price",
-  hooks: true,
-  onDelete: "CASCADE",
-});
+// Property.hasMany(SpecialPrice, {
+//   foreignKey: "property_id",
+//   sourceKey: "id",
+//   as: "special_price",
+//   hooks: true,
+//   onDelete: "CASCADE",
+// });
 
-SpecialPrice.belongsTo(Property, {
-  foreignKey: "property_id",
-  as: "property",
-  hooks: true,
-  onDelete: "CASCADE",
-});
+// SpecialPrice.belongsTo(Property, {
+//   foreignKey: "property_id",
+//   as: "property",
+//   hooks: true,
+//   onDelete: "CASCADE",
+// });
 
 SpecialPrice.sync();
 Property.sync();
@@ -23,7 +23,7 @@ export const addSpecialPrice = async (req, res) => {
   try {
     const propId = req.params.id;
     console.log(propId);
-    console.log(req.body)
+    console.log(req.body);
     const { date } = req.body;
     const dateBigInt = Date.parse(date); // converting value to big int miliseconds
     // console.log(from);

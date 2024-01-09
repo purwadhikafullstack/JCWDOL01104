@@ -93,7 +93,7 @@ export default class CommandUser {
 
     const getOtp = await this.otp.findOneOtp(params);
     if (!getOtp) await this.otp.inserOnetOtp({ email: email, otp: otp });
-    if (getOtp.dataValues.max_request >= 5) throw new AppError("Maksimal 5 Request Per Hari", 400);
+    if (getOtp && getOtp.dataValues.max_request >= 5) throw new AppError("Maksimal 5 Request Per Hari", 400);
 
     const updateOtp = { otp: otp, max_request: getOtp.dataValues.max_request + 1, refresh_otp: afterOneDay };
     const content = { otp: otp, username: getUser.dataValues.name };
@@ -175,6 +175,7 @@ export default class CommandUser {
     }
     if (userData && userData.email !== email) {
       updateData.email = email;
+      updateData.email_verified = false;
     }
     if (userData && userData.gender !== gender) {
       updateData.gender = gender;
