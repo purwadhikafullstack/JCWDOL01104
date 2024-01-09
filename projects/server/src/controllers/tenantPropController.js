@@ -7,40 +7,42 @@ import Property from "../models/property.js";
 import Room from "../models/room.js";
 import Category from "../models/category.js";
 import User from "../models/user.js";
-import upload from "../helpers/upload.js";
+import Location from "../models/location.js";
 import fs from "fs";
+import Order from "../models/order.js";
 
+const attributesChosen = [
+  "id",
+  "name",
+  "description",
+  "image_url",
+  "categoryId",
+];
+// Category.hasMany(Property, {
+//   foreignKey: "category_id",
+//   sourceKey: "id",
+//   as: "property",
+//   hooks: true,
+// });
 
-const attributesChosen = ["id", "name", "description", "image_url", "category_id"];
-Category.hasMany(Property, {
-  foreignKey: "category_id",
-  sourceKey: "id",
-  as: "property",
-  hooks: true,
-});
+// Property.belongsTo(Category, {
+//   foreignKey: "category_id",
+//   as: "category",
+//   hooks: true,
+// });
 
-Property.belongsTo(Category, {
-  foreignKey: "category_id",
-  as: "category",
-  hooks: true,
-});
+// User.hasMany(Property, {
+//   foreignKey: "user_id",
+//   sourceKey: "id",
+//   as: "propertyOwned",
+//   hooks: true,
+// });
 
-User.hasMany(Property, {
-  foreignKey: "user_id",
-  sourceKey: "id",
-  as: "propertyOwned",
-  hooks: true,
-});
-
-Property.belongsTo(User, {
-  foreignKey: "user_id",
-  as: "user",
-  hooks: true,
-});
-
-
-
-
+// Property.belongsTo(User, {
+//   foreignKey: "user_id",
+//   as: "user",
+//   hooks: true,
+// });
 
 Property.sync();
 Room.sync();
@@ -50,11 +52,11 @@ User.sync();
 export const getPropertyData = async (req, res) => {
   try {
     console.log("Get Property Data");
-    const userId=req.user;
+    const userId = req.user;
     const result = await Property.findAll({
       attributes: attributesChosen,
       include: [{ model: Category, as: "category" }],
-      where: { user_id: userId },
+      where: { userId: userId },
     });
     return res.status(200).send({
       message: "Property Data Succesfully Retrieved",
@@ -69,11 +71,20 @@ export const getPropertyData = async (req, res) => {
 
 export const postPropertyData = async (req, res) => {
   try {
-    const { name, description, category_id} = req.body;
-    const userId=req.user;
+    const { name, description, categoryId, location } = req.body;
 
-    const imageURL=`${process.env.SERVER_LINK}/${req.file.filename}`
-    const result = await Property.create({name: name, description: description, image_url: imageURL, category_id :category_id ,user_id:userId});
+    const propLocation = await Location.findOne({ where: { city: location } });
+    const userId = req.user;
+    // console.log(propLocation);
+    const imageURL = `${process.env.SERVER_LINK}/${req.file.filename}`;
+    const result = await Property.create({
+      name: name,
+      description: description,
+      image_url: imageURL,
+      categoryId: categoryId,
+      userId: userId,
+      locationId: propLocation.id,
+    });
 
     return res.status(202).send({
       message: "Property Data Succesfully Posted",
@@ -90,13 +101,25 @@ export const editPropertyData = async (req, res) => {
   try {
     const { id } = req.params;
     console.log("PropertyEdit Server :", id);
+    const { name, description, categoryId, location } = req.body;
+    const propLocation = await Location.findOne({ where: { city: location } });
+    const property = await Property.findByPk(id);
+    const path = property.image_url.substring(22);
+    fs.unlink(`public/${path}`, (err) => {
+      if (err) console.log(err);
+    });
 
-    const { name, description, image_url, category_id } = req.body;
-
+    const imageURL = `${process.env.SERVER_LINK}/${req.file.filename}`;
     console.log(req.body);
 
-    Property.update(
-      { name: name, description: description, image_url: image_url, category_id: category_id },
+    await Property.update(
+      {
+        name: name,
+        description: description,
+        image_url: imageURL,
+        categoryId: categoryId,
+        locationId: propLocation.id,
+      },
       { where: { id: id } }
     );
 
@@ -111,39 +134,56 @@ export const editPropertyData = async (req, res) => {
 };
 
 export const deletePropertyData = async (req, res) => {
-  
   try {
     const { id } = req.params;
-   
+
     const property = await Property.findByPk(id);
+
+    const rooms = await Room.findAll({
+      attributes: ["id", "image_url"],
+      where: { propertyId: id },
+    });
+    console.log("hai")
+    const allOrders = [];
+
+    for (const room of rooms) {
+      const orders = await Order.findAll({ where: { roomId: room.id } });
   
-    const room = await Room.findAll({attributes:["image_url"], where :{property_id:id}})
-  
+      allOrders.push(...orders);
+    }
+   
+    if (allOrders.length === 0){
     //Deleting Property Image
     const path = property.image_url.substring(22);
-    fs.unlink(`public/${path}`,(err) => {
+    fs.unlink(`public/${path}`, (err) => {
       if (err) console.log(err);
     });
-    console.log("Property File Deleted")
+    console.log("Property File Deleted");
     //Deleting Room Images
-    room.forEach((value)=>{
-      const pathRoom= value.dataValues.image_url.substring(22);
-      fs.unlink(`public/${pathRoom}`,(err) => {
+    rooms.forEach((value) => {
+      const pathRoom = value.dataValues.image_url.substring(22);
+      fs.unlink(`public/${pathRoom}`, (err) => {
         if (err) console.log(err);
       });
-    })
-    console.log("Room File deleted")
+    });
+    console.log("Room File deleted");
 
     await Property.destroy({
       where: {
         id: id,
       },
-      include: [{ model: Room, where: { property_id: id } }],
+      include: [{ model: Room, where: { propertyId: id } }],
     });
 
     return res.status(204).send({
       message: "Property Data Succesfully Deleted",
-    });
+    });}
+    else 
+    {
+      return res.status(500).send({
+        message: "Property Data Cannot Be Deleted, There are Orders Associated with the property",
+      });}
+  
   } catch (err) {
     return res.send({
       message: err.message,

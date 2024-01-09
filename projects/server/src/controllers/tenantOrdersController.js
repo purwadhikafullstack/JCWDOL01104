@@ -26,7 +26,7 @@ export const getAllOrders = async (req, res) => {
       include: [
         {
           model: Property,
-          as: "propertyOwned",
+          as: "properties",
           include: [
             {
               model: Room,
@@ -38,13 +38,14 @@ export const getAllOrders = async (req, res) => {
       ],
     });
 
-    const propertiesOwned = result.propertyOwned;
-
+    console.log("result:",result);
+    const propertiesOwned = result.properties;
+    console.log(propertiesOwned);
     // Use flatMap to retrieve orders for multiple rooms across all properties
     const allOrders = propertiesOwned.flatMap((property) => {
       // Access rooms associated with the property
       const rooms = property.rooms;
-
+      console.log(rooms);
       // Use flatMap to retrieve orders for multiple rooms within a property
       return rooms.flatMap((room) => {
         // Access orders associated with the room
@@ -116,7 +117,7 @@ export const getChartData = async (req, res) => {
       include: [
         {
           model: Property,
-          as: "propertyOwned",
+          as: "properties",
           include: [
             {
               model: Room,
@@ -143,8 +144,9 @@ export const getChartData = async (req, res) => {
       "Dec",
     ];
 
-    const propertiesOwned = result.propertyOwned;
+    const propertiesOwned = result.properties;
 
+    console.log(propertiesOwned);
     // Use flatMap to retrieve orders for multiple rooms across all properties
     const allOrders = propertiesOwned.flatMap((property) => {
       // Access rooms associated with the property
@@ -157,7 +159,7 @@ export const getChartData = async (req, res) => {
 
         // Return an array of orders for the current room
         return orders
-          .filter((order) => order.status === "sussess")
+          .filter((order) => order.status === "success")
           .map((order) => {
             // Access order fields as needed
             return {

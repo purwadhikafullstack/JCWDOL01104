@@ -6,6 +6,7 @@ import Favorites from "../favorite/repositories.js";
 import Locations from "../location/repositories.js";
 import Favorite from "../../models/favorite.js";
 import Property from "../../models/property.js";
+import Category from "../../models/category.js";
 
 export default class QueryProperty {
   constructor() {
@@ -25,7 +26,7 @@ export default class QueryProperty {
     const { city, limit, apartement, hotel, villa, price, sort } = query;
     const limitPage = Number(limit) || 4;
     const relation = [
-      { model: Location },
+      { model: Location, where:{ city : {[Op.like]:`%${city}%`}} },
       {
         model: Room,
         separate: true,
@@ -42,15 +43,23 @@ export default class QueryProperty {
       order: [["name", sort]],
     };
 
-    if (city) {
-      params = {
-        include: relation,
-        order: [["name", sort]],
-        where: { "$location.city$": { [Op.like]: `%${city}%` } },
-      };
+    if (apartement || hotel || villa) {
+      relation.push({
+        model: Category,
+        // where: { [Op.or]: [{ category: apartement }, { category: hotel }, { category: villa }] },
+      });
     }
 
+    // if (facility) {
+    //   relation.push({
+    //     model: FacilityList,
+    //     include: [{ model: Facility, where: { [Op.or]: [{ facility: facility }] } }],
+    //   });
+    // }
+
+
     const data = await this.property.findAndCountAllProperty(params);
+    console.log(data);
     return data;
   }
 

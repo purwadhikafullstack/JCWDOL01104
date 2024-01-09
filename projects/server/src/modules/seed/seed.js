@@ -7,7 +7,7 @@ import Categories from "../category/repositories.js";
 import Locations from "../../modules/location/repositories.js";
 import Properties from "../../modules/property/repositories.js";
 import Rooms from "../../modules/room/repositories.js";
-//import Data from "../../../mine/data.js";
+import Data from "../../../data/data.js";
 
 const router = Router();
 const role = new Roles();
@@ -22,10 +22,10 @@ const seed = tryCacth(async (req, res) => {
   await role.insertManyRole(Data.role);
   await category.insertManyCategory(Data.category);
   await location.insertManyLocation(Data.location);
-  await property.insertManyProperty(Data.property);
-  await room.insertManyRoom(Data.room);
+  // await property.insertManyProperty(Data.property);
+  // await room.insertManyRoom(Data.room);
   return utils.responseSuccess(res);
 });
 
-router.post("/", seed);
+router.get("/", seed);
 export default router;

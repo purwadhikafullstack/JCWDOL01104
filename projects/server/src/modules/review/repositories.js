@@ -2,10 +2,12 @@ import Review from "../../models/review.js";
 import User from "../../models/user.js";
 import Room from "../../models/room.js";
 import Property from "../../models/property.js";
+import Order from "../../models/order.js";
 
 Review.belongsTo(User);
 Review.belongsTo(Room);
 Review.belongsTo(Property);
+Review.belongsTo(Order);
 
 export default class Reviews {
   async findManyReview(params) {

@@ -8,6 +8,7 @@ const router = Router();
 router.get("/", orderHandler.getOrders);
 router.get("/id/:orderId", orderHandler.getOrderById);
 router.get("/user/", jwtAuth, orderHandler.getOrderByUserId);
+router.get("/userPastOrders/", jwtAuth, orderHandler.getOrderByUserIdPast);
 router.get("/book-order", orderHandler.getBookOrder);
 
 router.post("/book", jwtAuth, orderHandler.bookOrder);
