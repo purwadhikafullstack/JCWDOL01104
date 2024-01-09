@@ -7,6 +7,7 @@ const router = Router();
 
 console.log("Room Router")
 router.post("/:id", jwtAuth,upload,addRoomToProperty);
+router.post("/:id", jwtAuth,upload,addRoomToProperty);
 router.get("/:id", getRoomsInProperty);
 router.put("/:id",jwtAuth, upload, updateRoomData)
 router.delete("/:id",deleteRoomData)

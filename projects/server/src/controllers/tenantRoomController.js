@@ -120,6 +120,7 @@ export const updateRoomData = async (req, res) => {
 };
 
 export const deleteRoomData = async (req, res) => {
+
   try {
     const { id } = req.params;
 
@@ -232,5 +233,5 @@ export const getOccupancyData = async (req, res) => {
     return res.send({
       message: "Error acquiring occupancy data",
     });
-  }
+  }  
 };
