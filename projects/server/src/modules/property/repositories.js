@@ -3,8 +3,12 @@ import Location from "../../models/location.js";
 import Room from "../../models/room.js";
 import Favorite from "../../models/favorite.js";
 import Review from "../../models/review.js";
+import Category from "../../models/category.js";
+import User from "../../models/user.js";
 
 Property.belongsTo(Location);
+Property.belongsTo(Category);
+Property.belongsTo(User);
 Property.hasMany(Room);
 Property.hasMany(Favorite);
 Property.hasMany(Review);

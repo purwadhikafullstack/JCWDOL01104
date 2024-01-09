@@ -5,11 +5,9 @@ import jwtAuth from "../helpers/jwt-auth.js";
 
 const router = Router();
 
-// router.get ("/", totalProductList);
 router.get("/",jwtAuth, getPropertyData);
 router.post("/", jwtAuth, upload, postPropertyData);
-// router.delete("/","");
-router.put("/:id",jwtAuth,editPropertyData);
+router.put("/:id",jwtAuth,upload,editPropertyData);
 router.delete("/:id",jwtAuth,deletePropertyData);
 
 

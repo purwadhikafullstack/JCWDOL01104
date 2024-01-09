@@ -26,18 +26,6 @@ export const addSpecialPrice = async (req, res) => {
     console.log(req.body)
     const { date } = req.body;
     const dateBigInt = Date.parse(date); // converting value to big int miliseconds
-    // console.log(from);
-    // console.log(to);
-
-    // const fromReparsed = new Date();
-    // const toReparsed = new Date();
-
-    // fromReparsed.setTime(Number(from))
-    // toReparsed.setTime(Number(to))
-
-    // console.log(fromReparsed.toString());
-    // console.log(toReparsed.toString());
-
     const special = await SpecialPrice.create({
       percentage: req.body?.percentage,
       price: req.body?.price,

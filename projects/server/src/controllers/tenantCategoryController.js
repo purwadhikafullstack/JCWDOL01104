@@ -1,8 +1,3 @@
-import express from "express";
-// const db = require("../models")
-import { Sequelize } from "sequelize";
-// const Property = db.Property;
-import sequelize from "sequelize";
 import Property from "../models/property.js";
 import Category from "../models/category.js";
 

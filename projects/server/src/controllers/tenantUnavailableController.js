@@ -12,7 +12,7 @@ Room.hasMany(UnavailableRoom, {
 
 UnavailableRoom.belongsTo(Room, {
   foreignKey: "room_id",
-  as: "room",
+  as: "rooms",
   hooks: true,
   onDelete: "CASCADE",
 });

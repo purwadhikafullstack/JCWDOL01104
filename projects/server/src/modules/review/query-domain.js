@@ -70,7 +70,12 @@ export default class QueryReview {
     const params = {
       where: roomId,
     };
-    const data = await this.review.findAndCountAllReview(params);
+
+    const data = await this.review.findOneReview(params);
+
+    if (!data || !data.rows || data.rows.length === 0 || data.count === 0) {
+      return { rating: '0.0', totalReview: 0 };
+    }
     const clean = (
       data.rows.length > 0
         ? data.rows.reduce((a, b) => {
@@ -104,5 +109,15 @@ export default class QueryReview {
     const totalReview = data.count;
 
     return { rating, totalReview };
+  }
+
+  async getReviewByOrderId(query) {
+    const orderId = query;
+    const params = {
+      where: {orderId:orderId},
+    };
+    const data = await this.review.findOneReview(params);
+    if (data){return true}
+    else if (!data){return false}
   }
 }

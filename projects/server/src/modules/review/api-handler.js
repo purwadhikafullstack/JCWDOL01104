@@ -25,11 +25,18 @@ const getReviewByRoomId = tryCatch(async (req, res) => {
   return utils.responseSuccess(res, response);
 });
 
-const addReview = tryCatch(async (req, res) => {
-  const payload = req.body;
-  await utils.validateSchema(payload, schema.addReview);
-  const response = await command.addReview(payload);
+const getReviewByOrderId = tryCatch(async (req, res) => {
+  const params = req.params.orderId;
+  const response = await query.getReviewByOrderId(params);
   return utils.responseSuccess(res, response);
 });
 
-export default { getReviews, getReviewByPropertyId, getReviewByRoomId, addReview };
+const addReview = tryCatch(async (req, res) => {
+  const payload = req.body;
+  const userId=req.user;
+  await utils.validateSchema(payload, schema.addReview);
+  const response = await command.addReview(payload,userId);
+  return utils.responseSuccess(res, response);
+});
+
+export default { getReviews, getReviewByPropertyId, getReviewByRoomId, addReview, getReviewByOrderId };
