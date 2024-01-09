@@ -3,6 +3,7 @@ import Property from "../../models/property.js";
 
 Category.hasMany(Property);
 
+Category.hasMany(Property);
 export default class Categories {
   async insertManyCategory(data) {
     const result = await Category.bulkCreate(data);

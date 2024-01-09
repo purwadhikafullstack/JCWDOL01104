@@ -48,4 +48,21 @@ export default class CommandProperty {
       await this.favorite.insetOneFavorite(data);
     }
   }
+
+  async setFavorite(payload, userId) {
+    const { propertyId } = payload;
+    const params = {
+      include: [{ model: Property }, { model: User }],
+      where: { [Op.and]: [{ userId: userId }, { propertyId: propertyId }] },
+    };
+    const data = { status: true, userId: userId, propertyId: propertyId };
+    const getFavorite = await this.favorite.findOneFavorite(params);
+    if (getFavorite) {
+      const status = getFavorite.dataValues.status;
+      const updateData = { status: !status };
+      await this.favorite.updateOneFavorite(updateData, params);
+    } else {
+      await this.favorite.insetOneFavorite(data);
+    }
+  }
 }
