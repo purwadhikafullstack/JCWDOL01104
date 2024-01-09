@@ -96,6 +96,7 @@ const updateUser = joi.object({
     .max(50)
     .email({ minDomainSegments: 2, tlds: { allow: ["com", "me", "net"] } })
     .allow(),
+  password: joi.string().min(6).max(16).allow(),
   gender: joi.string().valid("male", "female").allow(),
   birthdate: joi.number().allow(),
 });
