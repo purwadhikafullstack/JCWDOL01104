@@ -12,7 +12,7 @@ router.get("/book-order", orderHandler.getBookOrder);
 
 router.post("/book", jwtAuth, orderHandler.bookOrder);
 router.post("/transaction", jwtAuth, orderHandler.transaction);
-router.post("/transaction-success", jwtAuth, orderHandler.transactionSuccess);
+router.post("/transaction-success", orderHandler.transactionSuccess);
 router.post("/transaction-cancel", jwtAuth, orderHandler.transactionCancel);
 router.post("/transaction-rejected", jwtAuth, orderHandler.transactionRejected);
 

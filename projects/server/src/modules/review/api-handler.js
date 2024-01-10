@@ -27,8 +27,9 @@ const getReviewByRoomId = tryCatch(async (req, res) => {
 
 const addReview = tryCatch(async (req, res) => {
   const payload = req.body;
+  const userId = req.user;
   await utils.validateSchema(payload, schema.addReview);
-  const response = await command.addReview(payload);
+  const response = await command.addReview(payload, userId);
   return utils.responseSuccess(res, response);
 });
 

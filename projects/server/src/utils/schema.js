@@ -105,7 +105,6 @@ const addProperty = joi.object({
   name: joi.string().required(),
   description: joi.string().required(),
   imageUrl: joi.string().required(),
-  userId: joi.number().required(),
   locationId: joi.number().required(),
   categoryId: joi.number().required(),
 });
@@ -136,7 +135,6 @@ const addReview = joi.object({
   service: joi.number().integer().max(5).min(1).required(),
   propertyId: joi.number().required(),
   roomId: joi.number().required(),
-  userId: joi.number().required(),
 });
 
 const propertyId = joi.object({

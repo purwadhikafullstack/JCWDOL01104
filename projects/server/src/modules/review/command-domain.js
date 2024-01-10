@@ -5,8 +5,8 @@ export default class CommandProperty {
     this.review = new Reviews();
   }
 
-  async addReview(payload) {
-    const { review, clean, security, satisfied, service, propertyId, roomId, userId } = payload;
+  async addReview(payload, userId) {
+    const { review, clean, security, satisfied, service, propertyId, roomId } = payload;
     const data = {
       review: review,
       clean: clean,

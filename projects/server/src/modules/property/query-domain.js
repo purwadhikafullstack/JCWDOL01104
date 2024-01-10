@@ -11,7 +11,7 @@ import Facility from "../../models/facility.js";
 import Facilities from "../facility/repositories.js";
 import User from "../../models/user.js";
 import Category from "../../models/category.js";
-import redisClient from "../../helpers/redis.js";
+// import redisClient from "../../helpers/redis.js";
 
 export default class QueryProperty {
   constructor() {

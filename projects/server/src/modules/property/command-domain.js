@@ -16,8 +16,8 @@ export default class CommandProperty {
     this.facility = new Facilities();
   }
 
-  async addProperty(payload) {
-    const { name, description, imageUrl, userId, locationId, categoryId } = payload;
+  async addProperty(payload, userId) {
+    const { name, description, imageUrl, locationId, categoryId } = payload;
     const data = {
       name: name,
       description: description,
