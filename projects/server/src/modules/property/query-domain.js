@@ -1,4 +1,4 @@
-import { Op, Sequelize, where } from "sequelize";
+import { Op } from "sequelize";
 import Properties from "./repositories.js";
 import Location from "../../models/location.js";
 import Room from "../../models/room.js";
@@ -76,7 +76,7 @@ export default class QueryProperty {
   }
 
   async getPropertyById(propertyId) {
-    const key = `propertyById${propertyId}`;
+    // const key = `propertyById${propertyId}`;
     // const dataRedis = await redisClient.getRedis(key);
     // if (dataRedis) return dataRedis;
 

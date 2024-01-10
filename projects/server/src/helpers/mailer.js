@@ -19,18 +19,6 @@ const pathResetPassword = "./src/helpers/template/reset-password.html";
 const pathInvoice = "./src/helpers/template/invoice.html";
 const pathProveTransaction = "./src/helpers/template/prove-transaction.html";
 
-const dummyData = {
-  username: "Adamss",
-  orderId: "sdafa",
-  propertyName: "Luxury Apartment, 123 Main St",
-  propertyRoom: "Luxury Apartment, 123 Main St",
-  roomInfo: "no smoking",
-  guest: 10,
-  numberOfNight: 3,
-  price: 240000,
-  totalPrice: 6000,
-};
-
 export const invoicePdf = async (content) => {
   const template = fs.readFileSync(pathInvoice, "utf-8");
   const rendered = mustache.render(template, content);

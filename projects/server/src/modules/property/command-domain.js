@@ -5,7 +5,6 @@ import Favorites from "../favorite/repositories.js";
 import Property from "../../models/property.js";
 import User from "../../models/user.js";
 import Facilities from "../../modules/facility/repositories.js";
-import AppError from "../../utils/app-error.js";
 import { generateFacility } from "../../helpers/helpers.js";
 
 export default class CommandProperty {

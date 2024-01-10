@@ -2,7 +2,6 @@ import { Op } from "sequelize";
 import Order from "./repositories.js";
 import User from "../../models/user.js";
 import Room from "../../models/room.js";
-import AppError from "../../utils/app-error.js";
 
 export default class QueryOrder {
   constructor() {

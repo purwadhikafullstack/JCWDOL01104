@@ -88,8 +88,8 @@ export default class CommandUser {
     const afterOneDay = new Date(Date.now() + 24 * 36e5).setHours(0, 0, 0, 0);
 
     const getUser = await this.query.getUserByEmail(email);
-    if (!getUser) throw new AppError("User Not Found");
-    if (getUser.dataValues.email_verified === true) throw new AppError("Email Has Been Verified", 400);
+    if (!getUser) throw new AppError("User Tidak Ditemukan");
+    if (getUser.dataValues.email_verified === true) throw new AppError("Email Telah Diverifikasi", 400);
 
     const getOtp = await this.otp.findOneOtp(params);
     if (!getOtp) await this.otp.inserOnetOtp({ email: email, otp: otp });
@@ -119,12 +119,12 @@ export default class CommandUser {
   async updatePassword(payload, userId) {
     const { oldPassword, newPassword, confirmPassword } = payload;
     const getUser = await this.query.getUserById(userId);
-    if (!getUser) throw new AppError("User Not Found", 404);
+    if (!getUser) throw new AppError("User Tidak Ditemukan", 404);
     const checkPwd = await bcrypt.compareHash(oldPassword, getUser.dataValues.password);
     if (!checkPwd) throw new AppError("Password Tidak Valid", 403);
-    if (!newPassword || !confirmPassword) throw new AppError("Field Are Require");
+    if (!newPassword || !confirmPassword) throw new AppError("Perlu Diisi");
     if (newPassword && confirmPassword) {
-      if (newPassword !== confirmPassword) throw new AppError("Password Must Match", 403);
+      if (newPassword !== confirmPassword) throw new AppError("Password Harus Sama", 403);
       const pwd = await bcrypt.generateHash(newPassword);
       const updateData = { password: pwd };
       const params = { where: { id: userId } };
@@ -135,7 +135,7 @@ export default class CommandUser {
   async resetPassword(payload) {
     const { email } = payload;
     const getUser = await this.query.getUserByEmail(email);
-    if (!getUser) throw new AppError("User Not Found", 404);
+    if (!getUser) throw new AppError("User Tidak Ditemukan", 404);
     if (!getUser.dataValues.password) throw new AppError("Tidak Bisa Reset Password", 400);
     const token = await bcrypt.generateHash(String(getUser.dataValues.id));
     const link = `${process.env.CLIENT_LINK}/reset-password?token=${token}&userId=${getUser.dataValues.id}`;
@@ -147,12 +147,12 @@ export default class CommandUser {
   async updateResetPassword(payload) {
     const { newPassword, confirmPassword, token, userId } = payload;
     const getUser = await this.query.getUserById(userId);
-    if (!getUser) throw new AppError("User Not Found", 403);
+    if (!getUser) throw new AppError("User Tidak Ditemukan", 403);
     const validToken = await bcrypt.compareHash(userId, String(token));
-    if (!validToken) throw new AppError("Token Invalid", 403);
-    if (!newPassword || !confirmPassword) throw new AppError("Field Are Require");
+    if (!validToken) throw new AppError("Token Tidak Valid", 403);
+    if (!newPassword || !confirmPassword) throw new AppError("Perlu Diisi");
     if (newPassword && confirmPassword) {
-      if (newPassword !== confirmPassword) throw new AppError("Password Must Match", 403);
+      if (newPassword !== confirmPassword) throw new AppError("Password Harus Sama", 403);
       const pwd = await bcrypt.generateHash(newPassword);
       const updateData = { password: pwd };
       const params = { where: { id: userId } };
@@ -163,7 +163,7 @@ export default class CommandUser {
   async updateUser(payload, userId) {
     const { name, email, password, gender, birthdate } = payload;
     const getUser = await this.query.getUserById(userId);
-    if (!getUser) throw new AppError("User Not Found", 403);
+    if (!getUser) throw new AppError("User Tidak Ditemukan", 403);
     if (email) {
       const checkUser = await this.query.getUserByEmail(email);
       if (checkUser) throw new AppError("Email Telah Digunakan", 403);
@@ -174,10 +174,12 @@ export default class CommandUser {
       updateData.name = name;
     }
     if (userData && userData.email !== email) {
-      const checkPwd = await bcrypt.compareHash(password, getUser.dataValues.password);
-      if (!checkPwd) throw new AppError("Password Tidak Sesuai", 403);
-      updateData.email = email;
-      updateData.email_verified = false;
+      if (email) {
+        const checkPwd = await bcrypt.compareHash(password, getUser.dataValues.password);
+        if (!checkPwd) throw new AppError("Password Tidak Sesuai", 403);
+        updateData.email = email;
+        updateData.email_verified = false;
+      }
     }
     if (userData && userData.gender !== gender) {
       updateData.gender = gender;

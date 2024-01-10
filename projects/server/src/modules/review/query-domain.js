@@ -1,5 +1,4 @@
 import Reviews from "./repositories.js";
-import Property from "../../models/property.js";
 import Room from "../../models/room.js";
 import User from "../../models/user.js";
 
@@ -8,14 +7,14 @@ export default class QueryReview {
     this.review = new Reviews();
   }
 
-  async getReviews(payload) {
+  async getReviews() {
     const params = {};
     const data = await this.review.findManyReview(params);
     return data;
   }
 
   async getReviewByPropertyId(query) {
-    const { propertyId, roomId } = query;
+    const { propertyId } = query;
     const paramsScore = {
       where: { propertyId: propertyId },
     };
