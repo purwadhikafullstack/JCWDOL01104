@@ -1,5 +1,6 @@
 import Property from "../models/property.js";
 import SpecialPrice from "../models/special-price.js";
+import { Op } from "sequelize";
 
 Property.hasMany(SpecialPrice, {
   foreignKey: "property_id",
@@ -22,8 +23,6 @@ Property.sync();
 export const addSpecialPrice = async (req, res) => {
   try {
     const propId = req.params.id;
-    console.log(propId);
-    console.log(req.body)
     const { date } = req.body;
     const dateBigInt = Date.parse(date); // converting value to big int miliseconds
     const special = await SpecialPrice.create({
@@ -38,7 +37,30 @@ export const addSpecialPrice = async (req, res) => {
       data: special,
     });
   } catch (err) {
-    return res.send({
+    return res.status(500).send({
+      message: err.message,
+    });
+  }
+};
+
+export const getSpecialPriceData = async (req, res) => {
+  try {
+    const date = BigInt(req.params.date);
+    const dateInMilis = Number(date);
+    const startOfDay = new Date(dateInMilis).setHours(0, 0, 0, 0);
+    const endOfDay = new Date(dateInMilis).setHours(23, 59, 59, 999);
+
+    const special = await SpecialPrice.findOne({
+      where: {
+        date: { [Op.between]: [startOfDay, endOfDay] },
+      },
+    });
+    return res.status(210).send({
+      message: "Special Price at date acquired successfully",
+      data: special,
+    });
+  } catch (err) {
+    return res.status(500).send({
       message: err.message,
     });
   }

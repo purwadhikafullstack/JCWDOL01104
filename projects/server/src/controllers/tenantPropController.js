@@ -1,8 +1,3 @@
-import express from "express";
-// const db = require("../models")
-import { Sequelize } from "sequelize";
-// const Property = db.Property;
-import sequelize from "sequelize";
 import Property from "../models/property.js";
 import Room from "../models/room.js";
 import Category from "../models/category.js";
@@ -18,37 +13,11 @@ const attributesChosen = [
   "image_url",
   "categoryId",
 ];
-// Category.hasMany(Property, {
-//   foreignKey: "category_id",
-//   sourceKey: "id",
-//   as: "property",
-//   hooks: true,
-// });
 
-// Property.belongsTo(Category, {
-//   foreignKey: "category_id",
-//   as: "category",
-//   hooks: true,
-// });
-
-// User.hasMany(Property, {
-//   foreignKey: "user_id",
-//   sourceKey: "id",
-//   as: "propertyOwned",
-//   hooks: true,
-// });
-
-// Property.belongsTo(User, {
-//   foreignKey: "user_id",
-//   as: "user",
-//   hooks: true,
-// });
 
 Property.sync();
 Room.sync();
 User.sync();
-User.sync();
-
 export const getPropertyData = async (req, res) => {
   try {
     console.log("Get Property Data");
@@ -75,7 +44,7 @@ export const postPropertyData = async (req, res) => {
 
     const propLocation = await Location.findOne({ where: { city: location } });
     const userId = req.user;
-    // console.log(propLocation);
+ 
     const imageURL = `${process.env.SERVER_LINK}/${req.file.filename}`;
     const result = await Property.create({
       name: name,
