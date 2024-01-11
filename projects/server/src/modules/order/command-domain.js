@@ -3,15 +3,16 @@ import midtrans from "midtrans-client";
 import Orders from "./repositories.js";
 import QueryOrder from "./query-domain.js";
 import AppError from "../../utils/app-error.js";
-import QueryUser from "../../modules/user/query-domain.js";
-import QueryRoom from "../../modules/room/query-domain.js";
-import QueryProperty from "../../modules/property/query-domain.js";
+import QueryUser from "../user/query-domain.js";
+import QueryRoom from "../room/query-domain.js";
+import QueryProperty from "../property/query-domain.js";
 import mailer from "../../helpers/mailer.js";
 import { Op } from "sequelize";
 import { v4 as uuidv4 } from "uuid";
 import { FormatToIDR } from "../../helpers/helpers.js";
 
 // Order flow --> unpaid | unconfirm | success | expired | cancel | rejected
+
 export default class CommandOrder {
   constructor() {
     this.order = new Orders();
@@ -30,11 +31,11 @@ export default class CommandOrder {
     const countDay = Math.round(Math.abs((firstDate - secondDate) / oneDay));
 
     const getRoom = await this.queryRoom.getRoomById(roomId);
-    if (!getRoom) throw new AppError("Room not Found", 404);
+    if (!getRoom) throw new AppError("Room Tidak Ditemukan", 404);
     const getUser = await this.queryUser.getUserById(userId);
-    if (!getUser) throw new AppError("Property not Found", 404);
+    if (!getUser) throw new AppError("Property Tidak Ditemukan", 404);
     const getProperty = await this.queryProperty.getPropertyById(getRoom.propertyId);
-    if (!getProperty) throw new AppError("Property not Found", 404);
+    if (!getProperty) throw new AppError("Property Tidak Ditemukan", 404);
 
     const totalPrice = countDay * getRoom.price;
 
@@ -55,10 +56,11 @@ export default class CommandOrder {
       orderId: order.id,
       numberOfNight: countDay,
       guest: guest,
-      propertyName: getProperty.dataValues.name,
+      propertyName: getProperty.property.name,
       propertyRoom: getRoom.dataValues.name,
       price: `${FormatToIDR(getRoom.price)}`,
       totalPrice: `${FormatToIDR(totalPrice)}`,
+      roomInfo: getRoom.dataValues.room_info,
     };
 
     mailer.invoicePdf(content);
@@ -66,9 +68,8 @@ export default class CommandOrder {
 
   async transaction(payload) {
     const { orderId } = payload;
-
     const getOrder = await this.query.getOrderById(orderId);
-    if (!getOrder) throw new AppError("Order not Found", 404);
+    if (!getOrder) throw new AppError("Order Tidak Ditemukan", 404);
     if (new Date().getTime() > getOrder.dataValues.expired) {
       await this.order.updateOneOrder({ status: "expired" }, { where: { id: orderId } });
       throw new AppError("Order Expired", 400);
@@ -89,14 +90,8 @@ export default class CommandOrder {
       },
     };
 
-    const email = getOrder.dataValues.user.email;
-    const content = {
-      orderId: orderId,
-      username: getOrder.dataValues.user.name,
-    };
-
-    mailer.invoice(email, content);
-    await this.order.updateOneOrder({ status: "unconfirm" }, { where: { id: orderId } });
+    const imageUrl = `${process.env.SERVER_LINK}/resources/payment.png`;
+    await this.order.updateOneOrder({ status: "unconfirm", image_url: imageUrl }, { where: { id: orderId } });
     return snap.createTransaction(parameter);
   }
 
@@ -113,6 +108,7 @@ export default class CommandOrder {
     const imageUrl = `${process.env.SERVER_LINK}/${file.filename}`;
     if (getOrder && getOrder.dataValues.image_url !== imageUrl) {
       updateData.image_url = imageUrl;
+      updateData.status = "unconfirm";
     }
     if (getOrder && getOrder.dataValues.image_url) {
       const path = getOrder.dataValues.image_url.substring(22);
@@ -120,6 +116,37 @@ export default class CommandOrder {
         if (err) console.log(err);
       });
     }
+
     await this.order.updateOneOrder(updateData, params);
+  }
+
+  async transactionSuccess(payload) {
+    const { orderId } = payload;
+    const params = { where: { [Op.and]: [{ id: orderId }, { status: "unconfirm" }] } };
+
+    const getOrder = await this.query.getOrderById(orderId);
+    if (!getOrder) throw new AppError("Order Tidak Ditemukan", 404);
+    const email = getOrder.dataValues.user.email;
+    const content = {
+      orderId: orderId,
+      username: getOrder.dataValues.user.name,
+    };
+
+    mailer.invoice(email, content);
+    await this.order.updateOneOrder({ status: "success" }, params);
+  }
+
+  async transactionCancel(payload) {
+    const { orderId } = payload;
+    const params = { where: { [Op.and]: [{ id: orderId }, { status: "unpaid" }] } };
+    await this.order.updateOneOrder({ status: "cancel" }, params);
+  }
+
+  async transactionRejected(payload) {
+    const { orderId } = payload;
+    const params = {
+      where: { [Op.and]: [{ id: orderId }, { [Op.or]: [{ status: "unconfirm" }, { status: "rejected" }] }] },
+    };
+    await this.order.updateOneOrder({ status: "rejected" }, params);
   }
 }

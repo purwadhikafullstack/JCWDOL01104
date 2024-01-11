@@ -9,12 +9,13 @@ export default class CommandRoom {
   }
 
   async addRoom(payload) {
-    const { name, price, description, guest, imageUrl, propertyId } = payload;
+    const { name, price, description, guest, imageUrl, roomInfo, propertyId } = payload;
     const data = {
       name: name,
       price: price,
       description: description,
       guest: guest,
+      room_info: roomInfo,
       image_url: imageUrl,
       propertyId: propertyId,
     };

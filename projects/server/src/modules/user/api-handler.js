@@ -76,8 +76,9 @@ const resetPassword = tryCatch(async (req, res) => {
 
 const updateResetPassword = tryCatch(async (req, res) => {
   const payload = req.body;
+  const userId = req.user;
   await utils.validateSchema(payload, schema.resetPassword);
-  const response = await command.updateResetPassword(payload);
+  const response = await command.updateResetPassword(payload, userId);
   return utils.responseSuccess(res, response);
 });
 

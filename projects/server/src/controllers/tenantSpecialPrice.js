@@ -10,12 +10,12 @@ Property.hasMany(SpecialPrice, {
   onDelete: "CASCADE",
 });
 
-SpecialPrice.belongsTo(Property, {
-  foreignKey: "property_id",
-  as: "property",
-  hooks: true,
-  onDelete: "CASCADE",
-});
+// SpecialPrice.belongsTo(Property, {
+//   foreignKey: "property_id",
+//   as: "property",
+//   hooks: true,
+//   onDelete: "CASCADE",
+// });
 
 SpecialPrice.sync();
 Property.sync();

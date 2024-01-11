@@ -246,6 +246,92 @@ export const getOccupancyData = async (req, res) => {
       message: "Occupancy Data Succesfully Acquired",
       data: occupancyData,
     });
+  }
+  else{
+    return res.status(500).send({
+      message: "Room Cannot Be Deleted, There are Orders Associated with the room",
+  });
+  }} catch(err) {
+    return res.send({
+      message: ("Error deleting Room",err.message)
+    });
+  }
+};
+
+export const getOccupancyData = async (req, res) => {
+  try {
+    const userId = req.user;
+    const date = BigInt(req.params.date);
+
+    console.log(typeof date);
+
+    const result = await Property.findAll({
+      attributes: ["id", "name"],
+      where: { userId: userId },
+      include: [
+        {
+          model: Room,
+          as: "rooms",
+          attributes: ["id", "name"],
+        },
+      ],
+    });
+
+    const occupancyData = {};
+
+    for (const property of result) {
+      const propertyId = property.dataValues.id;
+      const propertyName = property.dataValues.name;
+
+      const roomsData = [];
+
+      for (const room of property.rooms) {
+        const roomId = room.dataValues.id;
+        const roomName = room.dataValues.name;
+        console.log("here1");
+        console.log("roomid :", roomId);
+        const orders = await Order.findAll({
+          attributes: ["start_date", "end_date", "status"],
+          where: {
+            roomId: roomId,
+            start_date: { [Op.lte]: date },
+            end_date: { [Op.gte]: date },
+            status: "success",
+          },
+        });
+        console.log("roomid :", roomId);
+        const unavailable = await UnavailableRoom.findOne({
+          attributes: ["date"],
+          where: {
+            room_id: roomId,
+            date: date,
+          },
+        });
+
+        const availability =
+          orders.length > 0 || unavailable ? "unavailable" : "available";
+        console.log(orders.length);
+        roomsData.push({
+          room_id: roomId,
+          room_name: roomName,
+          availability: availability,
+        });
+      }
+
+      occupancyData[propertyId] = {
+        name: propertyName,
+        rooms: roomsData,
+      };
+    }
+
+    console.log(occupancyData);
+    // const rooms58 = occupancyData[58].rooms;
+    //  console.log("HERE IS THE DATA:", occupancyData);
+
+    return res.status(220).send({
+      message: "Occupancy Data Succesfully Acquired",
+      data: occupancyData,
+    });
   } catch {
     return res.send({
       message: "Error acquiring occupancy data",

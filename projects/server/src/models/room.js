@@ -11,10 +11,9 @@ const Room = sequelize.define(
     guest: { type: DataTypes.INTEGER },
     room_info: { type: DataTypes.STRING },
     image_url: { type: DataTypes.TEXT },
+    room_info: { type: DataTypes.STRING },
   },
   { timestamps: false }
 );
-
-//Define Associations
 
 export default Room;

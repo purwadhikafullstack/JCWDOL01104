@@ -32,8 +32,8 @@ export default class QueryUser {
 
   async getUserByEmailOrPhoneNumber(emailOrPhoneNumber) {
     const chekEmail = await this.getUserByEmail(emailOrPhoneNumber);
-    const chekPhone = await this.getUserByEmail(emailOrPhoneNumber);
-    if (!chekEmail && !chekPhone) throw new AppError("Email atau password tidak sesui", 403);
+    const chekPhone = await this.getUserByPhoneNumber(emailOrPhoneNumber);
+    if (!chekEmail && !chekPhone) throw new AppError("Email / No. HP Atau Password Tidak Sesuai", 403);
     const data = chekEmail ? chekEmail.dataValues : chekPhone.dataValues;
     return data;
   }
