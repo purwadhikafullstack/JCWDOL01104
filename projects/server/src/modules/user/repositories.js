@@ -4,7 +4,7 @@ import Property from "../../models/property.js";
 import Order from "../../models/order.js";
 import Favorite from "../../models/favorite.js";
 import Review from "../../models/review.js";
-import Property from "../../models/property.js";
+
 
 User.belongsTo(Role);
 User.hasMany(Property);

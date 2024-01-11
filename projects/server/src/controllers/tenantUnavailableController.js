@@ -1,21 +1,10 @@
 import UnavailableRoom from "../models/unavailable-room.js";
 import Room from "../models/room.js";
-// import { date } from "joi";
 
-Room.hasMany(UnavailableRoom, {
-  foreignKey: "room_id",
-  sourceKey: "id",
-  as: "unavailability",
-  hooks: true,
-  onDelete: "CASCADE",
-});
 
-UnavailableRoom.belongsTo(Room, {
-  foreignKey: "room_id",
-  as: "rooms",
-  hooks: true,
-  onDelete: "CASCADE",
-});
+Room.hasMany(UnavailableRoom)
+
+UnavailableRoom.belongsTo(Room)
 
 UnavailableRoom.sync();
 Room.sync();
@@ -26,7 +15,7 @@ export const postDisabledRoomData = (req, res) => {
 
     const { id } = req.params;
 
-    UnavailableRoom.create({ date: Date.parse(date), room_id: id });
+    UnavailableRoom.create({ date: Date.parse(date), roomId: id });
 
     return res.status(211).send({ message: "Succesful disable on room" });
   } catch (err) {
@@ -41,7 +30,7 @@ export const getDisabledDates = async (req, res) => {
     console.log(roomId);
     const result = await UnavailableRoom.findAll({
       attributes: ["date"],
-      where: { room_id: roomId },
+      where: { roomId: roomId },
     });
     //   console.log(result)
     const dateDataObj = result.map((value) => value.dataValues);

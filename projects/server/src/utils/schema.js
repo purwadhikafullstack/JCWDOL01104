@@ -152,7 +152,5 @@ const schema = {
   addRoom,
   bookOrder,
   addReview,
-  propertyId,
-  orderId,
 };
 export default schema;

@@ -200,7 +200,7 @@ export const getOccupancyData = async (req, res) => {
         const unavailable = await UnavailableRoom.findOne({
           attributes: ["date"],
           where: {
-            room_id: roomId,
+            roomId: roomId,
             date: {
               [Op.between]: [startOfDay, endOfDay],
             },
@@ -208,7 +208,7 @@ export const getOccupancyData = async (req, res) => {
         });
         const special = await SpecialPrice.findOne({
           where: {
-            property_id: propertyId,
+            propertyId: propertyId,
             date: { [Op.between]: [startOfDay, endOfDay] },
           },
         });

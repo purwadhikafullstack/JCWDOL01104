@@ -2,20 +2,8 @@ import Property from "../models/property.js";
 import SpecialPrice from "../models/special-price.js";
 import { Op } from "sequelize";
 
-Property.hasMany(SpecialPrice, {
-  foreignKey: "property_id",
-  sourceKey: "id",
-  as: "special_price",
-  hooks: true,
-  onDelete: "CASCADE",
-});
-
-// SpecialPrice.belongsTo(Property, {
-//   foreignKey: "property_id",
-//   as: "property",
-//   hooks: true,
-//   onDelete: "CASCADE",
-// });
+Property.hasMany(SpecialPrice)
+SpecialPrice.belongsTo(Property)
 
 SpecialPrice.sync();
 Property.sync();
@@ -29,7 +17,7 @@ export const addSpecialPrice = async (req, res) => {
       percentage: req.body?.percentage,
       price: req.body?.price,
       date: dateBigInt,
-      property_id: propId,
+      propertyId: propId,
     });
 
     return res.status(210).send({
