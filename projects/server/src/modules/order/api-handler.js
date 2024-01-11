@@ -25,12 +25,6 @@ const getOrderByUserId = tryCatch(async (req, res) => {
   return utils.responseSuccess(res, response);
 });
 
-const getOrderByUserIdPast = tryCatch(async (req, res) => {
-  const userId = req.user;
-  const response = await query.getOrderByUserIdPast(userId);
-  return utils.responseSuccess(res, response);
-});
-
 const getBookOrder = tryCatch(async (req, res) => {
   const params = req.query;
   const response = await query.getBookOrder(params);
@@ -42,20 +36,42 @@ const bookOrder = tryCatch(async (req, res) => {
   const userId = req.user;
   await utils.validateSchema(payload, schema.bookOrder);
   const response = await command.bookOrder(payload, userId);
-  return utils.responseSuccess(res, response, "Success Register", 201);
+  return utils.responseSuccess(res, response);
 });
 
 const transaction = tryCatch(async (req, res) => {
   const payload = req.body;
+  await utils.validateSchema(payload, schema.orderId);
   const response = await command.transaction(payload);
-  return utils.responseSuccess(res, response, "Success Login");
+  return utils.responseSuccess(res, response);
 });
 
 const uploadImageTransaction = tryCatch(async (req, res) => {
   const params = req.params.orderId;
   const file = req.file;
   const response = await command.uploadImageTransaction(file, params);
-  return utils.responseSuccess(res, response, "Success Login");
+  return utils.responseSuccess(res, response);
+});
+
+const transactionSuccess = tryCatch(async (req, res) => {
+  const payload = req.body;
+  await utils.validateSchema(payload, schema.orderId);
+  const response = await command.transactionSuccess(payload);
+  return utils.responseSuccess(res, response);
+});
+
+const transactionCancel = tryCatch(async (req, res) => {
+  const payload = req.body;
+  await utils.validateSchema(payload, schema.orderId);
+  const response = await command.transactionCancel(payload);
+  return utils.responseSuccess(res, response);
+});
+
+const transactionRejected = tryCatch(async (req, res) => {
+  const payload = req.body;
+  await utils.validateSchema(payload, schema.orderId);
+  const response = await command.transactionRejected(payload);
+  return utils.responseSuccess(res, response);
 });
 
 const scheduler = async () => {
@@ -72,6 +88,8 @@ export default {
   bookOrder,
   transaction,
   uploadImageTransaction,
+  transactionSuccess,
+  transactionCancel,
+  transactionRejected,
   scheduler,
-  getOrderByUserIdPast
 };

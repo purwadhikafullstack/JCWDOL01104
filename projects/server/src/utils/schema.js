@@ -1,5 +1,4 @@
 import joi from "joi";
-import Review from "../models/review.js"
 
 const register = joi.object({
   name: joi
@@ -81,7 +80,6 @@ const resetPassword = joi.object({
     .required()
     .label("Confirm password")
     .options({ messages: { "any.only": "{{#label}} does not match" } }),
-  token: joi.string().required(),
 });
 
 const updateUser = joi.object({
@@ -97,8 +95,27 @@ const updateUser = joi.object({
     .max(50)
     .email({ minDomainSegments: 2, tlds: { allow: ["com", "me", "net"] } })
     .allow(),
+  password: joi.string().min(6).max(16).allow(),
   gender: joi.string().valid("male", "female").allow(),
   birthdate: joi.number().allow(),
+});
+
+const addProperty = joi.object({
+  name: joi.string().required(),
+  description: joi.string().required(),
+  imageUrl: joi.string().required(),
+  locationId: joi.number().required(),
+  categoryId: joi.number().required(),
+});
+
+const addRoom = joi.object({
+  name: joi.string().required(),
+  price: joi.number().required(),
+  description: joi.string().required(),
+  guest: joi.number().required(),
+  roomInfo: joi.string().required(),
+  imageUrl: joi.string().required(),
+  propertyId: joi.number().required(),
 });
 
 const bookOrder = joi.object({
@@ -117,8 +134,14 @@ const addReview = joi.object({
   service: joi.number().integer().max(5).min(1).required(),
   propertyId: joi.number().required(),
   roomId: joi.number().required(),
-  orderId:joi.string().required(),
-  // userId: joi.number().required(),
+});
+
+const propertyId = joi.object({
+  propertyId: joi.number().required(),
+});
+
+const orderId = joi.object({
+  orderId: joi.string().required(),
 });
 
 const schema = {
@@ -130,7 +153,11 @@ const schema = {
   email,
   resetPassword,
   updateUser,
+  addProperty,
+  addRoom,
   bookOrder,
   addReview,
+  propertyId,
+  orderId,
 };
 export default schema;

@@ -19,18 +19,6 @@ const pathResetPassword = "./src/helpers/template/reset-password.html";
 const pathInvoice = "./src/helpers/template/invoice.html";
 const pathProveTransaction = "./src/helpers/template/prove-transaction.html";
 
-const dummyData = {
-  name: "Adam",
-  propertyName: "Luxury Apartment, 123 Main St",
-  propertyRoom: "Luxury Apartment, 123 Main St",
-  lengthOfStay: 3,
-  pricePerMonth: 2000,
-  totalAmount: 6000,
-  businessEmail: "contact@example.com",
-  description: "Monthly rent payment for a luxury apartment",
-  invoiceNumber: "INV123456",
-};
-
 export const invoicePdf = async (content) => {
   const template = fs.readFileSync(pathInvoice, "utf-8");
   const rendered = mustache.render(template, content);
@@ -80,6 +68,7 @@ const resetPassword = async (email, content) => {
 };
 
 const invoice = async (email, content) => {
+  console.log("mai;", content);
   const temp = fs.readFileSync(pathProveTransaction, "utf8");
   const body = mustache.render(temp, content);
   const mailOpt = {

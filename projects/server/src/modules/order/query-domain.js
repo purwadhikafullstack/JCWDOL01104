@@ -2,7 +2,6 @@ import { Op } from "sequelize";
 import Order from "./repositories.js";
 import User from "../../models/user.js";
 import Room from "../../models/room.js";
-import AppError from "../../utils/app-error.js";
 
 export default class QueryOrder {
   constructor() {
@@ -27,19 +26,7 @@ export default class QueryOrder {
       where: { userId: userId },
       order: [["createdAt", "desc"]],
     };
-    const data = await this.order.findAndCountAllOrder(params);
-    return data;
-  }
 
-  async getOrderByUserIdPast(userId) {
-
-    const latestDateBigInt = BigInt(new Date());
-    const params = {
-      include: [{ model: Room }],
-      where: { userId: userId, end_date:{ [Op.lt] : latestDateBigInt}},
-      order: [["createdAt", "desc"]],
-    };
-    
     const data = await this.order.findAndCountAllOrder(params);
     return data;
   }
@@ -49,6 +36,7 @@ export default class QueryOrder {
       include: [{ model: Room }],
       where: { roomId: roomId, start_date: { [Op.gt]: new Date() } },
     };
+
     const data = await this.order.findAllOrder(params);
     return data;
   }

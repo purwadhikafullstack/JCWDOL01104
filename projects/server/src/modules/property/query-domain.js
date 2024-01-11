@@ -1,18 +1,24 @@
-import { Op, Sequelize } from "sequelize";
+import { Op } from "sequelize";
 import Properties from "./repositories.js";
 import Location from "../../models/location.js";
 import Room from "../../models/room.js";
+import FacilityList from "../../models/facility-list.js";
 import Favorites from "../favorite/repositories.js";
 import Locations from "../location/repositories.js";
 import Favorite from "../../models/favorite.js";
 import Property from "../../models/property.js";
+import Facility from "../../models/facility.js";
+import Facilities from "../facility/repositories.js";
+import User from "../../models/user.js";
 import Category from "../../models/category.js";
+// import redisClient from "../../helpers/redis.js";
 
 export default class QueryProperty {
   constructor() {
     this.property = new Properties();
     this.location = new Locations();
     this.favorite = new Favorites();
+    this.facility = new Facilities();
   }
 
   async getLocations(query) {
@@ -23,10 +29,10 @@ export default class QueryProperty {
   }
 
   async getProperties(query) {
-    const { city, limit, apartement, hotel, villa, price, sort } = query;
+    const { city, limit, apartement, hotel, villa, price, sort, facility } = query;
     const limitPage = Number(limit) || 4;
     const relation = [
-      { model: Location, where:{ city : {[Op.like]:`%${city}%`}} },
+      { model: Location, where: { city: { [Op.like]: `%${city}%` } } },
       {
         model: Room,
         separate: true,
@@ -40,36 +46,55 @@ export default class QueryProperty {
     params = {
       include: relation,
       limit: limitPage,
-      order: [["name", sort]],
+      order: [["id", "desc"]],
     };
 
     if (apartement || hotel || villa) {
       relation.push({
         model: Category,
-        // where: { [Op.or]: [{ category: apartement }, { category: hotel }, { category: villa }] },
+        where: { [Op.or]: [{ category: apartement }, { category: hotel }, { category: villa }] },
       });
     }
 
-    // if (facility) {
-    //   relation.push({
-    //     model: FacilityList,
-    //     include: [{ model: Facility, where: { [Op.or]: [{ facility: facility }] } }],
-    //   });
-    // }
+    if (facility) {
+      relation.push({
+        model: FacilityList,
+        include: [{ model: Facility, where: { [Op.or]: [{ facility: facility }] } }],
+      });
+    }
 
+    if (sort) {
+      params.order = [["name", sort]];
+    }
+
+    if (price) {
+      params.include[1].order = [["price", price]];
+    }
 
     const data = await this.property.findAndCountAllProperty(params);
-    console.log(data);
     return data;
   }
 
   async getPropertyById(propertyId) {
+    // const key = `propertyById${propertyId}`;
+    // const dataRedis = await redisClient.getRedis(key);
+    // if (dataRedis) return dataRedis;
+
     const params = {
-      include: [{ model: Location }, { model: Room }, { model: Favorite }],
+      include: [
+        { model: Location },
+        { model: Room },
+        { model: Favorite },
+        { model: User },
+        { model: FacilityList, include: [{ model: Facility }] },
+      ],
       where: { id: propertyId },
     };
+    const paramsFacility = { include: [{ model: Facility }], where: { propertyId: propertyId } };
+    const facility = await this.facility.findManyFacilityList(paramsFacility);
     const data = await this.property.findOneProperty(params);
-    return data;
+    // if (!dataRedis) await redisClient.setExRedis(key, { property: data });
+    return { property: data, facility };
   }
 
   async getPropertyFavorite(userId) {

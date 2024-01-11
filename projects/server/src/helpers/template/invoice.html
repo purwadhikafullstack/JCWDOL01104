@@ -8,9 +8,16 @@
   </head>
   <body>
     <div class="px-6 pt-12">
-      <div class="flex items-center">
-        <img class="w-[40px] mr-2" src="http://localhost:8000/resources/lawang.png" />
-        <h1 class="text-3xl">Lawang</h1>
+      <div class="flex items-start justify-between">
+        <div class="flex items-center">
+          <img class="w-[40px] mr-2" src="http://localhost:8000/resources/lawang.png" />
+          <h1 class="text-4xl text-[#3FC1C9]">Lawang</h1>
+        </div>
+        <div class="text-[12px]">
+          <p>Email: lawang.resortdream@proton.me</p>
+          <p>Telp: 0899 6655 7676</p>
+          <p>Alamat: Jl. Jenderal Sudirman Kota Jakarta Selatan</p>
+        </div>
       </div>
 
       <h1 class="text-4xl mt-12 mb-8">Invoice Pembayaran</h1>
@@ -19,41 +26,45 @@
     </div>
 
     <div class="bg-slate-100">
-      <div class="px-6 py-4">
+      <div class="px-6 py-4 text-lg">
         <div class="flex justify-between">
-          <p class="text-lg">Invoice</p>
-          <p class="text-lg font-thin">{{ orderId }}</p>
+          <p>Invoice</p>
+          <p class="font-thin">{{ orderId }}</p>
         </div>
         <div class="flex justify-between">
-          <p class="text-lg">Properti</p>
-          <p class="text-lg font-thin">{{ propertyName }}</p>
+          <p>Properti</p>
+          <p class="font-thin">{{ propertyName }}</p>
         </div>
         <div class="flex justify-between">
-          <p class="text-lg">Kamar</p>
-          <p class="text-lg font-thin">{{ propertyRoom }}</p>
+          <p>Kamar</p>
+          <p class="font-thin">{{ propertyRoom }}</p>
         </div>
         <div class="flex justify-between">
-          <p class="text-lg">Tamu</p>
-          <p class="text-lg font-thin">{{ guest }} orang</p>
+          <p>Info</p>
+          <p class="font-thin">{{ roomInfo }}</p>
         </div>
         <div class="flex justify-between">
-          <p class="text-lg">Lama menginap</p>
-          <p class="text-lg font-thin">{{ numberOfNight }} malam</p>
+          <p>Tamu</p>
+          <p class="font-thin">{{ guest }} orang</p>
         </div>
         <div class="flex justify-between">
-          <p class="text-lg">Biaya per malam</p>
-          <p class="text-lg font-thin">{{ price }}</p>
+          <p>Lama menginap</p>
+          <p class="font-thin">{{ numberOfNight }} malam</p>
         </div>
         <div class="flex justify-between">
-          <p class="text-lg">Total biaya</p>
-          <p class="text-lg font-thin">{{ totalPrice }}</p>
+          <p>Biaya per malam</p>
+          <p class="font-thin">{{ price }}</p>
+        </div>
+        <div class="flex justify-between">
+          <p>Total biaya</p>
+          <p class="font-thin">{{ totalPrice }}</p>
         </div>
       </div>
     </div>
-    <div class="px-6">
-      <p class="text-lg mt-6 mb-2">Terimakasih atas kepercayaan Anda menggunakan layanan kami</p>
-      <p class="text-lg">Salam,</p>
-      <p class="text-lg">Tim Lawang Inc.</p>
+    <div class="px-6 text-lg">
+      <p class="mt-6 mb-2">Terimakasih atas kepercayaan Anda menggunakan layanan kami</p>
+      <p>Salam,</p>
+      <p>Tim Lawang Inc.</p>
     </div>
   </body>
 </html>
