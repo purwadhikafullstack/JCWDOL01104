@@ -76,7 +76,7 @@ export default class CommandUser {
     if (!getUser.password) throw new AppError("Password Tidak Valid", 400);
     const checkPwd = await bcrypt.compareHash(password, getUser.password);
     if (!checkPwd) throw new AppError("Email Atau Password Tidak Sesuai", 403);
-    const data = { id: getUser.id, image_url: getUser.image_url, role: getUser.role.role };
+    const data = { id: getUser.id, role: getUser.role.role };
     const token = jwt.sign(data, process.env.SECRET_KEY, { expiresIn: "30d" });
     return token;
   }
@@ -137,19 +137,18 @@ export default class CommandUser {
     const getUser = await this.query.getUserByEmail(email);
     if (!getUser) throw new AppError("User Tidak Ditemukan", 404);
     if (!getUser.dataValues.password) throw new AppError("Tidak Bisa Reset Password", 400);
-    const token = await bcrypt.generateHash(String(getUser.dataValues.id));
-    const link = `${process.env.CLIENT_LINK}/reset-password?token=${token}&userId=${getUser.dataValues.id}`;
+    const data = { id: getUser.id, role: getUser.role.role };
+    const token = jwt.sign(data, process.env.SECRET_KEY, { expiresIn: "1h" });
+    const link = `${process.env.CLIENT_LINK}/reset-password?token=${token}`;
     const username = getUser.dataValues.name;
     const contain = { link, username };
     await mailer.resetPassword(email, contain);
   }
 
-  async updateResetPassword(payload) {
-    const { newPassword, confirmPassword, token, userId } = payload;
+  async updateResetPassword(payload, userId) {
+    const { newPassword, confirmPassword } = payload;
     const getUser = await this.query.getUserById(userId);
     if (!getUser) throw new AppError("User Tidak Ditemukan", 403);
-    const validToken = await bcrypt.compareHash(userId, String(token));
-    if (!validToken) throw new AppError("Token Tidak Valid", 403);
     if (!newPassword || !confirmPassword) throw new AppError("Perlu Diisi");
     if (newPassword && confirmPassword) {
       if (newPassword !== confirmPassword) throw new AppError("Password Harus Sama", 403);

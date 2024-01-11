@@ -80,7 +80,6 @@ const resetPassword = joi.object({
     .required()
     .label("Confirm password")
     .options({ messages: { "any.only": "{{#label}} does not match" } }),
-  token: joi.string().required(),
 });
 
 const updateUser = joi.object({
