@@ -4,9 +4,10 @@ export default class CommandProperty {
   constructor() {
     this.review = new Reviews();
   }
+  
+  async addReview(payload,userId) {
 
-  async addReview(payload, userId) {
-    const { review, clean, security, satisfied, service, propertyId, roomId } = payload;
+    const { review, clean, security, satisfied, service, propertyId, roomId, orderId} = payload;
     const data = {
       review: review,
       clean: clean,
@@ -16,6 +17,7 @@ export default class CommandProperty {
       userId: userId,
       roomId: roomId,
       propertyId: propertyId,
+      orderId:orderId
     };
     await this.review.insertOneReview(data);
   }

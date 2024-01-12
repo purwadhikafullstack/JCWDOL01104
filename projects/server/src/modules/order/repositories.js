@@ -1,9 +1,11 @@
 import Order from "../../models/order.js";
+import Review from "../../models/review.js";
 import Room from "../../models/room.js";
 import User from "../../models/user.js";
 
 Order.belongsTo(Room);
 Order.belongsTo(User);
+Order.hasOne(Review);
 
 export default class Orders {
   async findAndCountAllOrder(params) {

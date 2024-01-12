@@ -1,4 +1,5 @@
 import joi from "joi";
+import Review from "../models/review.js"
 
 const register = joi.object({
   name: joi
@@ -134,14 +135,8 @@ const addReview = joi.object({
   service: joi.number().integer().max(5).min(1).required(),
   propertyId: joi.number().required(),
   roomId: joi.number().required(),
-});
-
-const propertyId = joi.object({
-  propertyId: joi.number().required(),
-});
-
-const orderId = joi.object({
-  orderId: joi.string().required(),
+  orderId:joi.string().required(),
+  // userId: joi.number().required(),
 });
 
 const schema = {
@@ -157,7 +152,5 @@ const schema = {
   addRoom,
   bookOrder,
   addReview,
-  propertyId,
-  orderId,
 };
 export default schema;

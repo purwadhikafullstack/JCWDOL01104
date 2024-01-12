@@ -25,6 +25,12 @@ const getOrderByUserId = tryCatch(async (req, res) => {
   return utils.responseSuccess(res, response);
 });
 
+const getOrderByUserIdPast = tryCatch(async (req, res) => {
+  const userId = req.user;
+  const response = await query.getOrderByUserIdPast(userId);
+  return utils.responseSuccess(res, response);
+});
+
 const getBookOrder = tryCatch(async (req, res) => {
   const params = req.query;
   const response = await query.getBookOrder(params);
@@ -92,4 +98,5 @@ export default {
   transactionCancel,
   transactionRejected,
   scheduler,
+  getOrderByUserIdPast
 };

@@ -31,6 +31,19 @@ export default class QueryOrder {
     return data;
   }
 
+  async getOrderByUserIdPast(userId) {
+
+    const latestDateBigInt = BigInt(new Date());
+    const params = {
+      include: [{ model: Room }],
+      where: { userId: userId, end_date:{ [Op.lt] : latestDateBigInt}},
+      order: [["createdAt", "desc"]],
+    };
+    
+    const data = await this.order.findAndCountAllOrder(params);
+    return data;
+  }
+
   async getOrderRoom(roomId) {
     const params = {
       include: [{ model: Room }],

@@ -32,7 +32,7 @@ export default class QueryProperty {
     const { city, limit, apartement, hotel, villa, price, sort, facility } = query;
     const limitPage = Number(limit) || 4;
     const relation = [
-      { model: Location, where: { city: { [Op.like]: `%${city}%` } } },
+      { model: Location, where:{ city : {[Op.like]:`%${city}%`}} },
       {
         model: Room,
         separate: true,
@@ -72,6 +72,7 @@ export default class QueryProperty {
     }
 
     const data = await this.property.findAndCountAllProperty(params);
+    console.log(data);
     return data;
   }
 

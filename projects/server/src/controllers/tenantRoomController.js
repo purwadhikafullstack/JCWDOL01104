@@ -2,6 +2,7 @@ import Room from "../models/room.js";
 import Property from "../models/property.js";
 import Order from "../models/order.js";
 import UnavailableRoom from "../models/unavailable-room.js";
+import SpecialPrice from "../models/special-price.js";
 import User from "../models/user.js";
 import { Op } from "sequelize";
 import fs from "fs";
@@ -120,37 +121,36 @@ export const updateRoomData = async (req, res) => {
 };
 
 export const deleteRoomData = async (req, res) => {
-
   try {
     const { id } = req.params;
 
-    const orders = await Order.findAll({ where: { roomId:id } });
-    
-    if (orders.length===0)
-    {
-    const room = await Room.findByPk(id);
-    console.log(room.image_url);
-    const path = room.image_url.substring(22);
-    fs.unlink(`public/${path}`, (err) => {
-      if (err) console.log(err);
-    });
-    console.log(id);
-    await Room.destroy({
-      where: {
-        id: id,
-      },
-    });
-    return res.status(208).send({
-      message: "Room Data Succesfully Deleted",
-    });
-  }
-  else{
-    return res.status(500).send({
-      message: "Room Cannot Be Deleted, There are Orders Associated with the room",
-  });
-  }} catch(err) {
+    const orders = await Order.findAll({ where: { roomId: id } });
+
+    if (orders.length === 0) {
+      const room = await Room.findByPk(id);
+      console.log(room.image_url);
+      const path = room.image_url.substring(22);
+      fs.unlink(`public/${path}`, (err) => {
+        if (err) console.log(err);
+      });
+      console.log(id);
+      await Room.destroy({
+        where: {
+          id: id,
+        },
+      });
+      return res.status(208).send({
+        message: "Room Data Succesfully Deleted",
+      });
+    } else {
+      return res.status(500).send({
+        message:
+          "Room Cannot Be Deleted, There are Orders Associated with the room",
+      });
+    }
+  } catch (err) {
     return res.send({
-      message: ("Error deleting Room",err.message)
+      message: ("Error deleting Room", err.message),
     });
   }
 };
@@ -159,8 +159,9 @@ export const getOccupancyData = async (req, res) => {
   try {
     const userId = req.user;
     const date = BigInt(req.params.date);
-
-    console.log(typeof date);
+    const dateInMilis = Number(date);
+    const startOfDay = new Date(dateInMilis).setHours(0, 0, 0, 0);
+    const endOfDay = new Date(dateInMilis).setHours(23, 59, 59, 999);
 
     const result = await Property.findAll({
       attributes: ["id", "name"],
@@ -169,7 +170,7 @@ export const getOccupancyData = async (req, res) => {
         {
           model: Room,
           as: "rooms",
-          attributes: ["id", "name"],
+          attributes: ["id", "name", "price"],
         },
       ],
     });
@@ -185,8 +186,7 @@ export const getOccupancyData = async (req, res) => {
       for (const room of property.rooms) {
         const roomId = room.dataValues.id;
         const roomName = room.dataValues.name;
-        console.log("here1");
-        console.log("roomid :", roomId);
+        const roomPrice = room.dataValues.price;
         const orders = await Order.findAll({
           attributes: ["start_date", "end_date", "status"],
           where: {
@@ -200,17 +200,38 @@ export const getOccupancyData = async (req, res) => {
         const unavailable = await UnavailableRoom.findOne({
           attributes: ["date"],
           where: {
-            room_id: roomId,
-            date: date,
+            roomId: roomId,
+            date: {
+              [Op.between]: [startOfDay, endOfDay],
+            },
           },
         });
+        const special = await SpecialPrice.findOne({
+          where: {
+            propertyId: propertyId,
+            date: { [Op.between]: [startOfDay, endOfDay] },
+          },
+        });
+       ;
+        const percentage = special
+          ? parseFloat(special.dataValues?.percentage || "0")
+          : 0;
+        const nominalPrice = special
+          ? parseFloat(special.dataValues?.price || "0")
+          : 0;
+
+        const roomFinalPrice =
+          (special && roomPrice * (1 + percentage / 100) + nominalPrice) ||
+          roomPrice;
+
 
         const availability =
           orders.length > 0 || unavailable ? "unavailable" : "available";
-        console.log(orders.length);
+
         roomsData.push({
           room_id: roomId,
           room_name: roomName,
+          room_price: roomFinalPrice,
           availability: availability,
         });
       }
@@ -221,17 +242,15 @@ export const getOccupancyData = async (req, res) => {
       };
     }
 
-    console.log(occupancyData);
-    // const rooms58 = occupancyData[58].rooms;
-    //  console.log("HERE IS THE DATA:", occupancyData);
-
     return res.status(220).send({
       message: "Occupancy Data Succesfully Acquired",
       data: occupancyData,
     });
-  } catch {
+  }
+  catch(err){ 
     return res.send({
-      message: "Error acquiring occupancy data",
+      message: err.message
     });
-  }  
-};
+  }
+}
+

@@ -1,8 +1,3 @@
-import express from "express";
-// const db = require("../models")
-import { Sequelize } from "sequelize";
-// const Property = db.Property;
-import sequelize from "sequelize";
 import Property from "../models/property.js";
 import Room from "../models/room.js";
 import Category from "../models/category.js";
@@ -11,38 +6,18 @@ import Location from "../models/location.js";
 import fs from "fs";
 import Order from "../models/order.js";
 
-const attributesChosen = ["id", "name", "description", "image_url", "categoryId"];
-// Category.hasMany(Property, {
-//   foreignKey: "category_id",
-//   sourceKey: "id",
-//   as: "property",
-//   hooks: true,
-// });
+const attributesChosen = [
+  "id",
+  "name",
+  "description",
+  "image_url",
+  "categoryId",
+];
 
-// Property.belongsTo(Category, {
-//   foreignKey: "category_id",
-//   as: "category",
-//   hooks: true,
-// });
-
-// User.hasMany(Property, {
-//   foreignKey: "user_id",
-//   sourceKey: "id",
-//   as: "propertyOwned",
-//   hooks: true,
-// });
-
-// Property.belongsTo(User, {
-//   foreignKey: "user_id",
-//   as: "user",
-//   hooks: true,
-// });
 
 Property.sync();
 Room.sync();
 User.sync();
-User.sync();
-
 export const getPropertyData = async (req, res) => {
   try {
     console.log("Get Property Data");
@@ -69,7 +44,7 @@ export const postPropertyData = async (req, res) => {
 
     const propLocation = await Location.findOne({ where: { city: location } });
     const userId = req.user;
-    // console.log(propLocation);
+ 
     const imageURL = `${process.env.SERVER_LINK}/${req.file.filename}`;
     const result = await Property.create({
       name: name,
@@ -137,46 +112,47 @@ export const deletePropertyData = async (req, res) => {
       attributes: ["id", "image_url"],
       where: { propertyId: id },
     });
-    console.log("hai");
+    console.log("hai")
     const allOrders = [];
 
     for (const room of rooms) {
       const orders = await Order.findAll({ where: { roomId: room.id } });
-
+  
       allOrders.push(...orders);
     }
-
-    if (allOrders.length === 0) {
-      //Deleting Property Image
-      const path = property.image_url.substring(22);
-      fs.unlink(`public/${path}`, (err) => {
+   
+    if (allOrders.length === 0){
+    //Deleting Property Image
+    const path = property.image_url.substring(22);
+    fs.unlink(`public/${path}`, (err) => {
+      if (err) console.log(err);
+    });
+    console.log("Property File Deleted");
+    //Deleting Room Images
+    rooms.forEach((value) => {
+      const pathRoom = value.dataValues.image_url.substring(22);
+      fs.unlink(`public/${pathRoom}`, (err) => {
         if (err) console.log(err);
       });
-      console.log("Property File Deleted");
-      //Deleting Room Images
-      rooms.forEach((value) => {
-        const pathRoom = value.dataValues.image_url.substring(22);
-        fs.unlink(`public/${pathRoom}`, (err) => {
-          if (err) console.log(err);
-        });
-      });
-      console.log("Room File deleted");
+    });
+    console.log("Room File deleted");
 
-      await Property.destroy({
-        where: {
-          id: id,
-        },
-        include: [{ model: Room, where: { propertyId: id } }],
-      });
+    await Property.destroy({
+      where: {
+        id: id,
+      },
+      include: [{ model: Room, where: { propertyId: id } }],
+    });
 
-      return res.status(204).send({
-        message: "Property Data Succesfully Deleted",
-      });
-    } else {
+    return res.status(204).send({
+      message: "Property Data Succesfully Deleted",
+    });}
+    else 
+    {
       return res.status(500).send({
         message: "Property Data Cannot Be Deleted, There are Orders Associated with the property",
-      });
-    }
+      });}
+  
   } catch (err) {
     return res.send({
       message: err.message,
