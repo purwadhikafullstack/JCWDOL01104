@@ -6,7 +6,15 @@ import SpecialPrice from "../models/special-price.js";
 import User from "../models/user.js";
 import { Op } from "sequelize";
 import fs from "fs";
-const attributesChosen = ["id", "name", "price", "description", "guest", "image_url", "room_info"];
+const attributesChosen = [
+  "id",
+  "name",
+  "price",
+  "description",
+  "guest",
+  "image_url",
+  "room_info",
+];
 
 // Property.hasMany(Room, {
 //   foreignKey: "property_id",
@@ -30,6 +38,9 @@ export const addRoomToProperty = async (req, res) => {
   try {
     const propId = req.params.id;
     const imageURL = `${process.env.SERVER_LINK}/${req.file.filename}`;
+    console.log("file", imageURL);
+    console.log("id properti", propId);
+    console.log("body", req.body);
     const newRoom = await Room.create({
       name: req.body.name,
       price: req.body.price,
@@ -52,6 +63,7 @@ export const addRoomToProperty = async (req, res) => {
 };
 
 export const getRoomsInProperty = async (req, res) => {
+  console.log("Get room data for property id :", req.params.id);
   try {
     const propId = req.params.id;
 
@@ -74,6 +86,7 @@ export const getRoomsInProperty = async (req, res) => {
 export const updateRoomData = async (req, res) => {
   try {
     const { id } = req.params;
+    console.log("Room Edit ID :", id);
 
     const { name, price, description, guest } = req.body;
     const room = await Room.findByPk(id);
@@ -83,6 +96,8 @@ export const updateRoomData = async (req, res) => {
     });
 
     const imageURL = `${process.env.SERVER_LINK}/${req.file.filename}`;
+
+    console.log(req.body);
 
     Room.update(
       {
@@ -118,6 +133,7 @@ export const deleteRoomData = async (req, res) => {
       fs.unlink(`public/${path}`, (err) => {
         if (err) console.log(err);
       });
+      console.log(id);
       await Room.destroy({
         where: {
           id: id,
@@ -128,7 +144,8 @@ export const deleteRoomData = async (req, res) => {
       });
     } else {
       return res.status(500).send({
-        message: "Room Cannot Be Deleted, There are Orders Associated with the room",
+        message:
+          "Room Cannot Be Deleted, There are Orders Associated with the room",
       });
     }
   } catch (err) {
@@ -179,6 +196,7 @@ export const getOccupancyData = async (req, res) => {
             status: "success",
           },
         });
+        console.log("roomid :", roomId);
         const unavailable = await UnavailableRoom.findOne({
           attributes: ["date"],
           where: {
@@ -194,12 +212,21 @@ export const getOccupancyData = async (req, res) => {
             date: { [Op.between]: [startOfDay, endOfDay] },
           },
         });
-        const percentage = special ? parseFloat(special.dataValues?.percentage || "0") : 0;
-        const nominalPrice = special ? parseFloat(special.dataValues?.price || "0") : 0;
+       ;
+        const percentage = special
+          ? parseFloat(special.dataValues?.percentage || "0")
+          : 0;
+        const nominalPrice = special
+          ? parseFloat(special.dataValues?.price || "0")
+          : 0;
 
-        const roomFinalPrice = (special && roomPrice * (1 + percentage / 100) + nominalPrice) || roomPrice;
+        const roomFinalPrice =
+          (special && roomPrice * (1 + percentage / 100) + nominalPrice) ||
+          roomPrice;
 
-        const availability = orders.length > 0 || unavailable ? "unavailable" : "available";
+
+        const availability =
+          orders.length > 0 || unavailable ? "unavailable" : "available";
 
         roomsData.push({
           room_id: roomId,
@@ -219,9 +246,11 @@ export const getOccupancyData = async (req, res) => {
       message: "Occupancy Data Succesfully Acquired",
       data: occupancyData,
     });
-  } catch (err) {
+  }
+  catch(err){ 
     return res.send({
-      message: err.message,
+      message: err.message
     });
   }
-};
+}
+
