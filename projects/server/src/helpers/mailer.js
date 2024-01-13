@@ -68,6 +68,7 @@ const resetPassword = async (email, content) => {
 };
 
 const invoice = async (email, content) => {
+  console.log("mai;", content);
   const temp = fs.readFileSync(pathProveTransaction, "utf8");
   const body = mustache.render(temp, content);
   const mailOpt = {
