@@ -35,23 +35,18 @@ export const postDisabledRoomData = (req, res) => {
 };
 
 export const getDisabledDates = async (req, res) => {
-  console.log("Get disabled dates for room_id :", req.params.id);
   try {
     const roomId = req.params.id;
-    console.log(roomId);
     const result = await UnavailableRoom.findAll({
       attributes: ["date"],
       where: { room_id: roomId },
     });
-    //   console.log(result)
     const dateDataObj = result.map((value) => value.dataValues);
-    console.log(dateDataObj);
     const dateData = dateDataObj.map((value) => {
       const val = new Date();
       val.setTime(Number(value.date));
       return val;
     });
-    console.log(dateData);
     return res.status(212).send({
       message: "Data Retrieved Succesfully",
       data: dateData,

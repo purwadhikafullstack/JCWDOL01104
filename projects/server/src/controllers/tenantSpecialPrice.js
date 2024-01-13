@@ -22,8 +22,6 @@ Property.sync();
 export const addSpecialPrice = async (req, res) => {
   try {
     const propId = req.params.id;
-    console.log(propId);
-    console.log(req.body);
     const { date } = req.body;
     const dateBigInt = Date.parse(date); // converting value to big int miliseconds
     const special = await SpecialPrice.create({

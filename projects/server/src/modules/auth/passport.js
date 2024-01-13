@@ -35,12 +35,8 @@ export default (passport) => {
   //       // scope: ["profile", "email"],
   //     },
   //     async function (accessToken, refreshToken, profile, callback) {
-  //       console.log("profile");
-  //       console.log(accessToken);
-  //       console.log(profile);
   //       const params = { where: { googleId: profile.id }, default: { googleId: profile.id } };
   //       // const result = await user.findOrCreateUser(params);
-  //       // console.log("result", result);
   //       // User.findOrCreate({ googleId: profile.id }, function (err, user) {
   //       //   return cb(err, user);
   //       // });

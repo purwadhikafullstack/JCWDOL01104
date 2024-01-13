@@ -8,7 +8,6 @@ const attributesChosen = ["id", "category"];
 
 export const getAllCategory = async (req, res) => {
   try {
-    console.log("Get Category Data");
 
     const result = await Property.findAll({
       attributes: attributesChosen,
@@ -29,7 +28,6 @@ export const getAllCategory = async (req, res) => {
 
 export const getPropertyCategory = async (req, res) => {
   try {
-    console.log("Get Specific Property Category Data");
 
     const { id } = req.params;
 

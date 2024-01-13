@@ -45,7 +45,6 @@ User.sync();
 
 export const getPropertyData = async (req, res) => {
   try {
-    console.log("Get Property Data");
     const userId = req.user;
     const result = await Property.findAll({
       attributes: attributesChosen,
@@ -69,7 +68,6 @@ export const postPropertyData = async (req, res) => {
 
     const propLocation = await Location.findOne({ where: { city: location } });
     const userId = req.user;
-    // console.log(propLocation);
     const imageURL = `${process.env.SERVER_LINK}/${req.file.filename}`;
     const result = await Property.create({
       name: name,
@@ -94,7 +92,6 @@ export const postPropertyData = async (req, res) => {
 export const editPropertyData = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log("PropertyEdit Server :", id);
     const { name, description, categoryId, location } = req.body;
     const propLocation = await Location.findOne({ where: { city: location } });
     const property = await Property.findByPk(id);
@@ -104,7 +101,6 @@ export const editPropertyData = async (req, res) => {
     });
 
     const imageURL = `${process.env.SERVER_LINK}/${req.file.filename}`;
-    console.log(req.body);
 
     await Property.update(
       {
@@ -137,7 +133,6 @@ export const deletePropertyData = async (req, res) => {
       attributes: ["id", "image_url"],
       where: { propertyId: id },
     });
-    console.log("hai");
     const allOrders = [];
 
     for (const room of rooms) {
@@ -152,7 +147,6 @@ export const deletePropertyData = async (req, res) => {
       fs.unlink(`public/${path}`, (err) => {
         if (err) console.log(err);
       });
-      console.log("Property File Deleted");
       //Deleting Room Images
       rooms.forEach((value) => {
         const pathRoom = value.dataValues.image_url.substring(22);
@@ -160,7 +154,6 @@ export const deletePropertyData = async (req, res) => {
           if (err) console.log(err);
         });
       });
-      console.log("Room File deleted");
 
       await Property.destroy({
         where: {

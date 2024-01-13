@@ -5,15 +5,7 @@ import UnavailableRoom from "../models/unavailable-room.js";
 import User from "../models/user.js";
 import { Op } from "sequelize";
 import fs from "fs";
-const attributesChosen = [
-  "id",
-  "name",
-  "price",
-  "description",
-  "guest",
-  "image_url",
-  "room_info",
-];
+const attributesChosen = ["id", "name", "price", "description", "guest", "image_url", "room_info"];
 
 // Property.hasMany(Room, {
 //   foreignKey: "property_id",
@@ -37,9 +29,6 @@ export const addRoomToProperty = async (req, res) => {
   try {
     const propId = req.params.id;
     const imageURL = `${process.env.SERVER_LINK}/${req.file.filename}`;
-    console.log("file", imageURL);
-    console.log("id properti", propId);
-    console.log("body", req.body);
     const newRoom = await Room.create({
       name: req.body.name,
       price: req.body.price,
@@ -62,7 +51,6 @@ export const addRoomToProperty = async (req, res) => {
 };
 
 export const getRoomsInProperty = async (req, res) => {
-  console.log("Get room data for property id :", req.params.id);
   try {
     const propId = req.params.id;
 
@@ -85,7 +73,6 @@ export const getRoomsInProperty = async (req, res) => {
 export const updateRoomData = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log("Room Edit ID :", id);
 
     const { name, price, description, guest } = req.body;
     const room = await Room.findByPk(id);
@@ -95,8 +82,6 @@ export const updateRoomData = async (req, res) => {
     });
 
     const imageURL = `${process.env.SERVER_LINK}/${req.file.filename}`;
-
-    console.log(req.body);
 
     Room.update(
       {
@@ -120,37 +105,33 @@ export const updateRoomData = async (req, res) => {
 };
 
 export const deleteRoomData = async (req, res) => {
-
   try {
     const { id } = req.params;
 
-    const orders = await Order.findAll({ where: { roomId:id } });
-    
-    if (orders.length===0)
-    {
-    const room = await Room.findByPk(id);
-    console.log(room.image_url);
-    const path = room.image_url.substring(22);
-    fs.unlink(`public/${path}`, (err) => {
-      if (err) console.log(err);
-    });
-    console.log(id);
-    await Room.destroy({
-      where: {
-        id: id,
-      },
-    });
-    return res.status(208).send({
-      message: "Room Data Succesfully Deleted",
-    });
-  }
-  else{
-    return res.status(500).send({
-      message: "Room Cannot Be Deleted, There are Orders Associated with the room",
-  });
-  }} catch(err) {
+    const orders = await Order.findAll({ where: { roomId: id } });
+
+    if (orders.length === 0) {
+      const room = await Room.findByPk(id);
+      const path = room.image_url.substring(22);
+      fs.unlink(`public/${path}`, (err) => {
+        if (err) console.log(err);
+      });
+      await Room.destroy({
+        where: {
+          id: id,
+        },
+      });
+      return res.status(208).send({
+        message: "Room Data Succesfully Deleted",
+      });
+    } else {
+      return res.status(500).send({
+        message: "Room Cannot Be Deleted, There are Orders Associated with the room",
+      });
+    }
+  } catch (err) {
     return res.send({
-      message: ("Error deleting Room",err.message)
+      message: ("Error deleting Room", err.message),
     });
   }
 };
@@ -159,8 +140,6 @@ export const getOccupancyData = async (req, res) => {
   try {
     const userId = req.user;
     const date = BigInt(req.params.date);
-
-    console.log(typeof date);
 
     const result = await Property.findAll({
       attributes: ["id", "name"],
@@ -185,8 +164,6 @@ export const getOccupancyData = async (req, res) => {
       for (const room of property.rooms) {
         const roomId = room.dataValues.id;
         const roomName = room.dataValues.name;
-        console.log("here1");
-        console.log("roomid :", roomId);
         const orders = await Order.findAll({
           attributes: ["start_date", "end_date", "status"],
           where: {
@@ -196,7 +173,6 @@ export const getOccupancyData = async (req, res) => {
             status: "success",
           },
         });
-        console.log("roomid :", roomId);
         const unavailable = await UnavailableRoom.findOne({
           attributes: ["date"],
           where: {
@@ -205,9 +181,7 @@ export const getOccupancyData = async (req, res) => {
           },
         });
 
-        const availability =
-          orders.length > 0 || unavailable ? "unavailable" : "available";
-        console.log(orders.length);
+        const availability = orders.length > 0 || unavailable ? "unavailable" : "available";
         roomsData.push({
           room_id: roomId,
           room_name: roomName,
@@ -221,9 +195,7 @@ export const getOccupancyData = async (req, res) => {
       };
     }
 
-    console.log(occupancyData);
     // const rooms58 = occupancyData[58].rooms;
-    //  console.log("HERE IS THE DATA:", occupancyData);
 
     return res.status(220).send({
       message: "Occupancy Data Succesfully Acquired",
@@ -233,5 +205,5 @@ export const getOccupancyData = async (req, res) => {
     return res.send({
       message: "Error acquiring occupancy data",
     });
-  }  
+  }
 };

@@ -3,20 +3,10 @@ import User from "../models/user.js";
 import Property from "../models/property.js";
 import Room from "../models/room.js";
 
-const attributesChosen = [
-  "id",
-  "status",
-  "start_date",
-  "end_date",
-  "total_price",
-  "guest",
-  "image_url",
-];
+const attributesChosen = ["id", "status", "start_date", "end_date", "total_price", "guest", "image_url"];
 
 export const getAllOrders = async (req, res) => {
   try {
-    console.log("Get Order Data");
-
     const userId = req.user;
 
     //   const result = await Order.findAll({
@@ -38,14 +28,11 @@ export const getAllOrders = async (req, res) => {
       ],
     });
 
-    console.log("result:",result);
     const propertiesOwned = result.properties;
-    console.log(propertiesOwned);
     // Use flatMap to retrieve orders for multiple rooms across all properties
     const allOrders = propertiesOwned.flatMap((property) => {
       // Access rooms associated with the property
       const rooms = property.rooms;
-      console.log(rooms);
       // Use flatMap to retrieve orders for multiple rooms within a property
       return rooms.flatMap((room) => {
         // Access orders associated with the room
@@ -68,8 +55,6 @@ export const getAllOrders = async (req, res) => {
       });
     });
 
-    // console.log("this is the result :", result.dataValues.propertyOwned[0].dataValues.rooms[0].dataValues.orders);
-    console.log("All Orders:", allOrders);
     //   const dataValuesArray = result.map((result) => result.dataValues);
 
     return res.status(213).send({
@@ -86,11 +71,8 @@ export const getAllOrders = async (req, res) => {
 export const updateStatus = async (req, res) => {
   try {
     const { orderId } = req.params;
-    console.log("Orders Edit ID :", orderId);
 
     const { status } = req.body;
-
-    console.log(req.body);
 
     Order.update({ status: status }, { where: { id: orderId } });
 
@@ -106,8 +88,6 @@ export const updateStatus = async (req, res) => {
 
 export const getChartData = async (req, res) => {
   try {
-    console.log("Get Chart Data");
-
     const userId = req.user;
 
     //   const result = await Order.findAll({
@@ -129,24 +109,10 @@ export const getChartData = async (req, res) => {
       ],
     });
 
-    const month = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ];
+    const month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
     const propertiesOwned = result.properties;
 
-    console.log(propertiesOwned);
     // Use flatMap to retrieve orders for multiple rooms across all properties
     const allOrders = propertiesOwned.flatMap((property) => {
       // Access rooms associated with the property
@@ -202,8 +168,6 @@ export const getChartData = async (req, res) => {
       chartData[year].totalRevenue += total;
       chartData[year].totalOrders++;
     });
-
-    console.log(chartData);
 
     return res.status(215).send({
       message: "Chart Data Succesfully Retrieved",
