@@ -2,20 +2,20 @@ import UnavailableRoom from "../models/unavailable-room.js";
 import Room from "../models/room.js";
 // import { date } from "joi";
 
-Room.hasMany(UnavailableRoom, {
-  foreignKey: "room_id",
-  sourceKey: "id",
-  as: "unavailability",
-  hooks: true,
-  onDelete: "CASCADE",
-});
+// Room.hasMany(UnavailableRoom, {
+//   foreignKey: "room_id",
+//   sourceKey: "id",
+//   as: "unavailability",
+//   hooks: true,
+//   onDelete: "CASCADE",
+// });
 
-UnavailableRoom.belongsTo(Room, {
-  foreignKey: "room_id",
-  as: "rooms",
-  hooks: true,
-  onDelete: "CASCADE",
-});
+// UnavailableRoom.belongsTo(Room, {
+//   foreignKey: "room_id",
+//   as: "rooms",
+//   hooks: true,
+//   onDelete: "CASCADE",
+// });
 
 UnavailableRoom.sync();
 Room.sync();

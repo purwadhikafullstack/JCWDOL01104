@@ -9,7 +9,8 @@ const query = new QueryOrder();
 const command = new CommandOrder();
 
 const getOrders = tryCatch(async (req, res) => {
-  const response = await query.getOrders();
+  const params = req.query;
+  const response = await query.getOrders(params);
   return utils.responseSuccess(res, response);
 });
 

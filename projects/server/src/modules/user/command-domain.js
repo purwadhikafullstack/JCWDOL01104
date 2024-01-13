@@ -71,9 +71,10 @@ export default class CommandUser {
   }
 
   async login(payload) {
-    const { emailOrPhoneNumber, password } = payload;
+    const { emailOrPhoneNumber, password, role } = payload;
     const getUser = await this.query.getUserByEmailOrPhoneNumber(emailOrPhoneNumber);
-    if (!getUser.password) throw new AppError("Password Tidak Valid", 400);
+    if (getUser.role.role !== role) throw new AppError("Tidak Dapat Masuk", 400);
+    if (!getUser.password) throw new AppError("Tidak Dapat Masuk", 400);
     const checkPwd = await bcrypt.compareHash(password, getUser.password);
     if (!checkPwd) throw new AppError("Email Atau Password Tidak Sesuai", 403);
     const data = { id: getUser.id, role: getUser.role.role };

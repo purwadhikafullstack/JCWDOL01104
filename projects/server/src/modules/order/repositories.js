@@ -2,6 +2,7 @@ import Order from "../../models/order.js";
 import Room from "../../models/room.js";
 import User from "../../models/user.js";
 
+Order.sync();
 Order.belongsTo(Room);
 Order.belongsTo(User);
 

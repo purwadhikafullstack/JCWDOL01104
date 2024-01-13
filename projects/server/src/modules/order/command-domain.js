@@ -23,7 +23,7 @@ export default class CommandOrder {
   }
 
   async bookOrder(payload, userId) {
-    const { startDate, endDate, guest, roomId } = payload;
+    const { startDate, endDate, guest, totalPrice, roomId } = payload;
 
     const oneDay = 24 * 36 * 1e5;
     const firstDate = new Date(startDate);
@@ -36,8 +36,6 @@ export default class CommandOrder {
     if (!getUser) throw new AppError("Property Tidak Ditemukan", 404);
     const getProperty = await this.queryProperty.getPropertyById(getRoom.propertyId);
     if (!getProperty) throw new AppError("Property Tidak Ditemukan", 404);
-
-    const totalPrice = countDay * getRoom.price;
 
     const data = {
       id: uuidv4(),

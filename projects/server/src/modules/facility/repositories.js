@@ -2,6 +2,8 @@ import Facility from "../../models/facility.js";
 import FacilityList from "../../models/facility-list.js";
 import Property from "../../models/property.js";
 
+Facility.sync();
+FacilityList.sync();
 Facility.hasMany(FacilityList);
 FacilityList.belongsTo(Facility);
 FacilityList.belongsTo(Property);

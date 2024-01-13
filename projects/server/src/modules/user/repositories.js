@@ -10,6 +10,7 @@ User.hasMany(Property);
 User.hasMany(Order);
 User.hasMany(Favorite);
 User.hasMany(Review);
+User.sync();
 
 export default class Users {
   async findAllUser(params) {

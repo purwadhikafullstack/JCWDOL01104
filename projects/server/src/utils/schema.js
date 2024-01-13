@@ -25,6 +25,7 @@ const login = joi.object({
     .max(50)
     .regex(/^[0-9A-Za-z@'.]+$/),
   password: joi.string().min(6).max(16).required(),
+  role: joi.string().valid("user", "tenant"),
 });
 
 const otpRequest = joi.object({

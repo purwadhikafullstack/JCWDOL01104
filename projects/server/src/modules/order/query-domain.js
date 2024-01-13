@@ -1,11 +1,13 @@
 import { Op } from "sequelize";
 import Order from "./repositories.js";
+import UnavailableRooms from "../unavailable_room/repositories.js";
 import User from "../../models/user.js";
 import Room from "../../models/room.js";
 
 export default class QueryOrder {
   constructor() {
     this.order = new Order();
+    this.unavailableRooms = new UnavailableRooms();
   }
   async getOrders(query) {
     const { limit } = query;
@@ -43,6 +45,7 @@ export default class QueryOrder {
 
   async getBookOrder(query) {
     const { roomId, start, end } = query;
+
     const params = {
       where: {
         roomId: roomId,
@@ -56,8 +59,17 @@ export default class QueryOrder {
       },
     };
 
+    const paramsUnavailableRoom = {
+      where: {
+        roomId: roomId,
+        date: new Date(Number(start)).setHours(0, 0, 0, 0),
+      },
+    };
+
     const data = await this.order.findAllOrder(params);
-    if (data.length > 0) return "exist";
-    else return "not exixt";
+    const unavailableRooms = await this.unavailableRooms.findOneUnavailableRoom(paramsUnavailableRoom);
+
+    if (data.length > 0 || unavailableRooms) return true;
+    else return false;
   }
 }

@@ -2,6 +2,7 @@ import Favorite from "../../models/favorite.js";
 import User from "../../models/user.js";
 import Property from "../../models/property.js";
 
+Favorite.sync();
 Favorite.belongsTo(User);
 Favorite.belongsTo(Property);
 

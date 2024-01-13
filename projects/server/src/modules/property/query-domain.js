@@ -5,6 +5,7 @@ import Room from "../../models/room.js";
 import FacilityList from "../../models/facility-list.js";
 import Favorites from "../favorite/repositories.js";
 import Locations from "../location/repositories.js";
+import SpecialPrices from "../special_price/repositories.js";
 import Favorite from "../../models/favorite.js";
 import Property from "../../models/property.js";
 import Facility from "../../models/facility.js";
@@ -19,6 +20,7 @@ export default class QueryProperty {
     this.location = new Locations();
     this.favorite = new Favorites();
     this.facility = new Facilities();
+    this.specialPrice = new SpecialPrices();
   }
 
   async getLocations(query) {
@@ -95,6 +97,15 @@ export default class QueryProperty {
     const data = await this.property.findOneProperty(params);
     // if (!dataRedis) await redisClient.setExRedis(key, { property: data });
     return { property: data, facility };
+  }
+
+  async getSpecialPrice(query) {
+    const { propertyId, start } = query;
+    const params = {
+      where: { propertyId: propertyId, date: new Date(Number(start)).setHours(0, 0, 0, 0) },
+    };
+    const data = await this.specialPrice.findOneSpecialPrice(params);
+    return data;
   }
 
   async getPropertyFavorite(userId) {
