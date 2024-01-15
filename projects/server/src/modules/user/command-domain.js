@@ -92,11 +92,16 @@ export default class CommandUser {
     if (!getUser) throw new AppError("User Tidak Ditemukan");
     if (getUser.dataValues.email_verified === true) throw new AppError("Email Telah Diverifikasi", 400);
 
+    let updateOtp = {};
     const getOtp = await this.otp.findOneOtp(params);
-    if (!getOtp) await this.otp.inserOnetOtp({ email: email, otp: otp });
+    if (!getOtp) {
+      const thisOtp = await this.otp.inserOnetOtp({ email: email, otp: otp });
+      updateOtp = { otp: otp, max_request: thisOtp.dataValues.max_request + 1, refresh_otp: afterOneDay };
+    } else {
+      updateOtp = { otp: otp, max_request: getOtp.dataValues.max_request + 1, refresh_otp: afterOneDay };
+    }
     if (getOtp && getOtp.dataValues.max_request >= 5) throw new AppError("Maksimal 5 Request Per Hari", 400);
 
-    const updateOtp = { otp: otp, max_request: getOtp.dataValues.max_request + 1, refresh_otp: afterOneDay };
     const content = { otp: otp, username: getUser.dataValues.name };
     if (getOtp) await this.otp.updateOnetOtp(updateOtp, params);
     await mailer.verifyEmail(email, content);
@@ -200,7 +205,7 @@ export default class CommandUser {
       updateData.image_url = imageUrl;
     }
     const path = getUser.dataValues.image_url.substring(22);
-    fs.unlink(`public/${path}`, (err) => {
+    fs.unlink(`src/public/${path}`, (err) => {
       if (err) console.log(err);
     });
     await this.user.updateOneUser(updateData, params);

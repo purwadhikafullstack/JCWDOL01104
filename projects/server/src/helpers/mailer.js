@@ -28,7 +28,7 @@ export const invoicePdf = async (content) => {
   await page.setContent(rendered, { waitUntil: "domcontentloaded" });
 
   await page.pdf({
-    path: `./public/files/invoice-${content.orderId}.pdf`,
+    path: `./src/public/files/invoice-${content.orderId}.pdf`,
     format: "A4",
     printBackground: true,
   });
@@ -47,7 +47,7 @@ const verifyEmail = async (email, content) => {
     attachments: [
       {
         filename: "lawang.png",
-        path: "./public/resources/lawang.png",
+        path: "./src/public/resources/lawang.png",
         cid: "logo",
       },
     ],
@@ -63,6 +63,13 @@ const resetPassword = async (email, content) => {
     to: email,
     subject: "Reset Password",
     html: body,
+    attachments: [
+      {
+        filename: "lawang.png",
+        path: "./src/public/resources/lawang.png",
+        cid: "logo",
+      },
+    ],
   };
   mailer.sendMail(mailOpt);
 };
@@ -78,7 +85,7 @@ const invoice = async (email, content) => {
     attachments: [
       {
         filename: `invoice-${content.orderId}.pdf`,
-        path: `./public/files/invoice-${content.orderId}.pdf`,
+        path: `./src/public/files/invoice-${content.orderId}.pdf`,
         contentType: "application/pdf",
       },
     ],
