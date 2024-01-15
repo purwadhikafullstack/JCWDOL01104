@@ -23,7 +23,7 @@ export default class CommandOrder {
   }
 
   async bookOrder(payload, userId) {
-    const { startDate, endDate, guest, totalPrice, roomId } = payload;
+    const { startDate, endDate, guest, price, totalPrice, roomId } = payload;
 
     const oneDay = 24 * 36 * 1e5;
     const firstDate = new Date(startDate);
@@ -56,7 +56,7 @@ export default class CommandOrder {
       guest: guest,
       propertyName: getProperty.property.name,
       propertyRoom: getRoom.dataValues.name,
-      price: `${FormatToIDR(getRoom.price)}`,
+      price: `${FormatToIDR(price)}`,
       totalPrice: `${FormatToIDR(totalPrice)}`,
       roomInfo: getRoom.dataValues.room_info,
     };
