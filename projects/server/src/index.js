@@ -4,12 +4,12 @@ import cors from "cors";
 import helmet from "helmet";
 import passport from "passport";
 import session from "express-session";
-import { connetionMysql } from "./src/config/db.js";
-import { corsConfig, sessionConfig } from "./src/config/config.js";
-import errorHandler from "./src/utils/error-handler.js";
-import notFound from "./src/utils/not-found.js";
-import passportConfig from "./src/modules/auth/passport.js";
-import routes from "./src/routes/index.js";
+import { connetionMysql } from "./config/db.js";
+import { corsConfig, sessionConfig } from "./config/config.js";
+import errorHandler from "./utils/error-handler.js";
+import notFound from "./utils/not-found.js";
+import passportConfig from "./modules/auth/passport.js";
+import routes from "./routes/index.js";
 
 const app = express();
 const PORT = process.env.PORT || 8080;

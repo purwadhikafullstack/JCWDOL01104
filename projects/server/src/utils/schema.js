@@ -123,6 +123,7 @@ const bookOrder = joi.object({
   startDate: joi.number().required(),
   endDate: joi.number().required(),
   guest: joi.number().required(),
+  price: joi.number().required(),
   totalPrice: joi.number().required(),
   roomId: joi.alternatives().try(joi.string(), joi.number()).required(),
 });
