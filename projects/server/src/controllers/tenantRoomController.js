@@ -78,7 +78,7 @@ export const updateRoomData = async (req, res) => {
     const { name, price, description, guest } = req.body;
     const room = await Room.findByPk(id);
     const path = room.image_url.substring(22);
-    fs.unlink(`public/${path}`, (err) => {});
+    fs.unlink(`src/public/${path}`, (err) => {});
 
     const imageURL = `${process.env.SERVER_LINK}/${req.file.filename}`;
 
@@ -112,7 +112,7 @@ export const deleteRoomData = async (req, res) => {
     if (orders.length === 0) {
       const room = await Room.findByPk(id);
       const path = room.image_url.substring(22);
-      fs.unlink(`public/${path}`, (err) => {});
+      fs.unlink(`src/public/${path}`, (err) => {});
       await Room.destroy({
         where: {
           id: id,

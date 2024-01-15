@@ -8,7 +8,7 @@ import Locations from "../../modules/location/repositories.js";
 import Properties from "../../modules/property/repositories.js";
 import Rooms from "../../modules/room/repositories.js";
 import Facilities from "../../modules/facility/repositories.js";
-import Data from "../../../data/data.js";
+import Data from "../../data/data.js";
 
 const router = Router();
 const role = new Roles();

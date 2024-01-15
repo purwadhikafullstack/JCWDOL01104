@@ -65,7 +65,7 @@ export const editPropertyData = async (req, res) => {
     const propLocation = await Location.findOne({ where: { city: location } });
     const property = await Property.findByPk(id);
     const path = property.image_url.substring(22);
-    fs.unlink(`public/${path}`, (err) => {});
+    fs.unlink(`src/public/${path}`, (err) => {});
 
     const imageURL = `${process.env.SERVER_LINK}/${req.file.filename}`;
 
@@ -111,11 +111,11 @@ export const deletePropertyData = async (req, res) => {
     if (allOrders.length === 0) {
       //Deleting Property Image
       const path = property.image_url.substring(22);
-      fs.unlink(`public/${path}`, (err) => {});
+      fs.unlink(`src/public/${path}`, (err) => {});
       //Deleting Room Images
       rooms.forEach((value) => {
         const pathRoom = value.dataValues.image_url.substring(22);
-        fs.unlink(`public/${pathRoom}`, (err) => {});
+        fs.unlink(`src/public/${pathRoom}`, (err) => {});
       });
 
       await Property.destroy({

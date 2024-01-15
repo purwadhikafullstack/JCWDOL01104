@@ -17,7 +17,7 @@ const PORT = process.env.PORT || 8080;
 connetionMysql();
 passportConfig(passport);
 
-app.use(express.static("public"));
+app.use(express.static("src/public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors(corsConfig));

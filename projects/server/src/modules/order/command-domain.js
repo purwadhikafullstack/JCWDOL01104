@@ -59,6 +59,7 @@ export default class CommandOrder {
       price: `${FormatToIDR(price)}`,
       totalPrice: `${FormatToIDR(totalPrice)}`,
       roomInfo: getRoom.dataValues.room_info,
+      logo_link: process.env.LOGO_LINK,
     };
 
     mailer.invoicePdf(content);
@@ -110,7 +111,7 @@ export default class CommandOrder {
     }
     if (getOrder && getOrder.dataValues.image_url) {
       const path = getOrder.dataValues.image_url.substring(22);
-      fs.unlink(`public/${path}`, (err) => {
+      fs.unlink(`src/public/${path}`, (err) => {
         if (err) console.log(err);
       });
     }
@@ -128,6 +129,7 @@ export default class CommandOrder {
     const content = {
       orderId: orderId,
       username: getOrder.dataValues.user.name,
+      logo_link: process.env.LOGO_LINK,
     };
 
     mailer.invoice(email, content);
