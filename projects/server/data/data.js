@@ -2,6 +2,54 @@ const role = [{ role: "user" }, { role: "tenant" }];
 
 const category = [{ category: "villa" }, { category: "hotel" }, { category: "apartement" }];
 
+const facility = [
+  {
+    facility: "wifi",
+  },
+  {
+    facility: "tv",
+  },
+  {
+    facility: "ac",
+  },
+  {
+    facility: "bathub",
+  },
+  {
+    facility: "microwave",
+  },
+  {
+    facility: "bicycle",
+  },
+  {
+    facility: "extinguisher",
+  },
+  {
+    facility: "park",
+  },
+  {
+    facility: "firstaid",
+  },
+  {
+    facility: "spa",
+  },
+  {
+    facility: "gym",
+  },
+  {
+    facility: "pool",
+  },
+  {
+    facility: "garden",
+  },
+  {
+    facility: "grill",
+  },
+  {
+    facility: "balcony",
+  },
+];
+
 const location = [
   {
     city: "Kota Tangerang Selatan",
@@ -2886,5 +2934,5 @@ const room = [
   },
 ];
 
-const Data = { role, category, location, property, room };
+const Data = { role, category, location, property, room, facility };
 export default Data;

@@ -20,7 +20,7 @@ const room = new Rooms();
 
 const seed = tryCacth(async (req, res) => {
   const checkRole = await role.findManyRole();
-  if (checkRole.length !== 0) throw new AppError("Database Sudah Dibuat ✋", 400);
+  if (checkRole && checkRole.length !== 0) throw new AppError("Database Sudah Dibuat ✋", 400);
   await role.insertManyRole(Data.role);
   await category.insertManyCategory(Data.category);
   await facility.insertManyFacility(Data.facility);

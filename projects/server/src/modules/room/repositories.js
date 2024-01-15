@@ -2,10 +2,13 @@ import Room from "../../models/room.js";
 import Property from "../../models/property.js";
 import Order from "../../models/order.js";
 import Review from "../../models/review.js";
+import UnavailableRoom from "../../models/unavailable-room.js";
 
+Room.sync();
 Room.belongsTo(Property);
 Room.hasMany(Order);
 Room.hasMany(Review);
+Room.hasMany(UnavailableRoom);
 
 export default class Rooms {
   async findAllRoom(params) {

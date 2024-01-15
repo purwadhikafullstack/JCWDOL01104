@@ -5,13 +5,12 @@ import Order from "../../models/order.js";
 import Favorite from "../../models/favorite.js";
 import Review from "../../models/review.js";
 
-
 User.belongsTo(Role);
 User.hasMany(Property);
 User.hasMany(Order);
 User.hasMany(Favorite);
 User.hasMany(Review);
-User.hasMany(Property)
+User.sync();
 
 export default class Users {
   async findAllUser(params) {

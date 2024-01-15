@@ -1,7 +1,9 @@
 import Role from "../../models/role.js";
 import User from "../../models/user.js";
 
+Role.sync();
 Role.hasMany(User);
+
 export default class Roles {
   async findManyRole() {
     const result = await Role.findAll();

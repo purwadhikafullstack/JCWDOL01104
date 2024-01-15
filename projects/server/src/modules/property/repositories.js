@@ -6,7 +6,9 @@ import Category from "../../models/category.js";
 import Favorite from "../../models/favorite.js";
 import Review from "../../models/review.js";
 import FacilityList from "../../models/facility-list.js";
+import SpecialPrice from "../../models/special-price.js";
 
+Property.sync();
 Property.belongsTo(Location);
 Property.belongsTo(User);
 Property.belongsTo(Category);
@@ -14,6 +16,7 @@ Property.hasMany(Room);
 Property.hasMany(Favorite);
 Property.hasMany(Review);
 Property.hasMany(FacilityList);
+Property.hasMany(SpecialPrice);
 
 export default class Properties {
   async findAndCountAllProperty(params) {

@@ -6,7 +6,7 @@ const SpecialPrice = sequelize.define(
   {
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
     percentage: { type: DataTypes.DECIMAL },
-    price: { type: DataTypes.DECIMAL},
+    price: { type: DataTypes.DECIMAL },
     date: { type: DataTypes.BIGINT },
   },
   { timestamps: false }

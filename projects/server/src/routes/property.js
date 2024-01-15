@@ -7,9 +7,10 @@ const router = Router();
 router.get("/location", propertyHandler.getLocations);
 router.get("/favorite", jwtAuth, propertyHandler.getPropertyFavorite);
 router.get("/", propertyHandler.getProperties);
-router.get("/:propertyId", propertyHandler.getPropertyById);
+router.get("/id/:propertyId", propertyHandler.getPropertyById);
+router.get("/special-price", propertyHandler.getSpecialPrice);
 
-router.post("/", propertyHandler.addProperty);
+router.post("/", jwtAuth, propertyHandler.addProperty);
 router.post("/favorite", jwtAuth, propertyHandler.setFavorite);
 
 export default router;

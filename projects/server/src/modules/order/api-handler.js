@@ -9,7 +9,8 @@ const query = new QueryOrder();
 const command = new CommandOrder();
 
 const getOrders = tryCatch(async (req, res) => {
-  const response = await query.getOrders();
+  const params = req.query;
+  const response = await query.getOrders(params);
   return utils.responseSuccess(res, response);
 });
 
@@ -22,12 +23,6 @@ const getOrderById = tryCatch(async (req, res) => {
 const getOrderByUserId = tryCatch(async (req, res) => {
   const userId = req.user;
   const response = await query.getOrderByUserId(userId);
-  return utils.responseSuccess(res, response);
-});
-
-const getOrderByUserIdPast = tryCatch(async (req, res) => {
-  const userId = req.user;
-  const response = await query.getOrderByUserIdPast(userId);
   return utils.responseSuccess(res, response);
 });
 
@@ -98,5 +93,4 @@ export default {
   transactionCancel,
   transactionRejected,
   scheduler,
-  getOrderByUserIdPast
 };

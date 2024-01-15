@@ -75,14 +75,4 @@ export default class QueryReview {
 
     return { rating, totalReview };
   }
-
-  async getReviewByOrderId(query) {
-    const orderId = query;
-    const params = {
-      where: {orderId:orderId},
-    };
-    const data = await this.review.findOneReview(params);
-    if (data){return true}
-    else if (!data){return false}
-  }
 }
