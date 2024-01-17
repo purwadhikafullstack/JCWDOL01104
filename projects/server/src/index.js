@@ -23,7 +23,6 @@ passportConfig(passport);
 app.use(express.static(join(__dirname, "../src/public")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cors());
 app.use(cors(corsConfig));
 app.use(morgan("dev"));
 app.use(helmet());
