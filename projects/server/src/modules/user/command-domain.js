@@ -9,6 +9,10 @@ import mailer from "../../helpers/mailer.js";
 import Role from "../role/repositories.js";
 import otpGenerator from "otp-generator";
 import Otps from "../../modules/otp/reposotories.js";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default class CommandUser {
   constructor() {
@@ -204,8 +208,10 @@ export default class CommandUser {
     if (getUser && getUser.dataValues.image_url !== imageUrl) {
       updateData.image_url = imageUrl;
     }
-    const path = getUser.dataValues.image_url.substring(22);
-    fs.unlink(`src/public/${path}`, (err) => {
+    const pathLength = process.env.SERVER_LINK.length;
+    const path = getUser.dataValues.image_url.substring(pathLength + 1);
+
+    fs.unlink(join(__dirname, `../../public/${path}`), (err) => {
       if (err) console.log(err);
     });
     await this.user.updateOneUser(updateData, params);

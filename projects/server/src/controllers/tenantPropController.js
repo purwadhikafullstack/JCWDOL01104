@@ -64,8 +64,12 @@ export const editPropertyData = async (req, res) => {
     const { name, description, categoryId, location } = req.body;
     const propLocation = await Location.findOne({ where: { city: location } });
     const property = await Property.findByPk(id);
-    const path = property.image_url.substring(22);
-    fs.unlink(`src/public/${path}`, (err) => {});
+    const pathLength = process.env.SERVER_LINK.length;
+    const path = property.dataValues.image_url.substring(pathLength + 1);
+
+    fs.unlink(join(__dirname, `../public/${path}`), (err) => {
+      if (err) console.log(err);
+    });
 
     const imageURL = `${process.env.SERVER_LINK}/${req.file.filename}`;
 
@@ -110,12 +114,21 @@ export const deletePropertyData = async (req, res) => {
 
     if (allOrders.length === 0) {
       //Deleting Property Image
-      const path = property.image_url.substring(22);
-      fs.unlink(`src/public/${path}`, (err) => {});
+      const pathLength = process.env.SERVER_LINK.length;
+      const path = property.dataValues.image_url.substring(pathLength + 1);
+
+      fs.unlink(join(__dirname, `../public/${path}`), (err) => {
+        if (err) console.log(err);
+      });
+
       //Deleting Room Images
       rooms.forEach((value) => {
-        const pathRoom = value.dataValues.image_url.substring(22);
-        fs.unlink(`src/public/${pathRoom}`, (err) => {});
+        const pathLength = process.env.SERVER_LINK.length;
+        const path = value.dataValues.image_url.substring(pathLength + 1);
+
+        fs.unlink(join(__dirname, `../public/${path}`), (err) => {
+          if (err) console.log(err);
+        });
       });
 
       await Property.destroy({
