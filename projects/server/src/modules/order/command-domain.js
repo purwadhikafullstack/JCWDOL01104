@@ -113,7 +113,7 @@ export default class CommandOrder {
       const pathLength = process.env.SERVER_LINK.length;
       const path = getOrder.dataValues.image_url.substring(pathLength + 1);
 
-      fs.unlink(join(__dirname, `../public/${path}`), (err) => {
+      fs.unlink(join(__dirname, `../../public/${path}`), (err) => {
         if (err) console.log(err);
       });
     }
