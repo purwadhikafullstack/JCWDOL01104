@@ -2,6 +2,10 @@ import nodemailer from "nodemailer";
 import mustache from "mustache";
 import puppeteer from "puppeteer";
 import fs from "fs";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const mailer = nodemailer.createTransport({
   port: process.env.MAILER_PORT,
@@ -14,10 +18,10 @@ const mailer = nodemailer.createTransport({
   },
 });
 
-const pathVerifyEmail = "./src/helpers/template/verify-email.html";
-const pathResetPassword = "./src/helpers/template/reset-password.html";
-const pathInvoice = "./src/helpers/template/invoice.html";
-const pathProveTransaction = "./src/helpers/template/prove-transaction.html";
+const pathVerifyEmail = join(__dirname, "/template/verify-email.html");
+const pathResetPassword = join(__dirname, "/template/reset-password.html");
+const pathInvoice = join(__dirname, "/template/invoice.html");
+const pathProveTransaction = join(__dirname, "/template/prove-transaction.html");
 
 export const invoicePdf = async (content) => {
   const template = fs.readFileSync(pathInvoice, "utf-8");
@@ -28,7 +32,7 @@ export const invoicePdf = async (content) => {
   await page.setContent(rendered, { waitUntil: "domcontentloaded" });
 
   await page.pdf({
-    path: `./src/public/files/invoice-${content.orderId}.pdf`,
+    path: join(__dirname, `../public/files/invoice-${content.orderId}.pdf`),
     format: "A4",
     printBackground: true,
   });
@@ -47,7 +51,7 @@ const verifyEmail = async (email, content) => {
     attachments: [
       {
         filename: "lawang.png",
-        path: "./src/public/resources/lawang.png",
+        path: join(__dirname, "../public/resources/lawang.png"),
         cid: "logo",
       },
     ],
@@ -66,7 +70,7 @@ const resetPassword = async (email, content) => {
     attachments: [
       {
         filename: "lawang.png",
-        path: "./src/public/resources/lawang.png",
+        path: join(__dirname, "../public/resources/lawang.png"),
         cid: "logo",
       },
     ],
@@ -85,7 +89,7 @@ const invoice = async (email, content) => {
     attachments: [
       {
         filename: `invoice-${content.orderId}.pdf`,
-        path: `./src/public/files/invoice-${content.orderId}.pdf`,
+        path: join(__dirname, `../public/files/invoice-${content.orderId}.pdf`),
         contentType: "application/pdf",
       },
     ],
