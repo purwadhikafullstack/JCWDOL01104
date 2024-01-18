@@ -6,6 +6,12 @@ import SpecialPrice from "../models/special-price.js";
 import User from "../models/user.js";
 import { Op } from "sequelize";
 import fs from "fs";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+
 const attributesChosen = ["id", "name", "price", "description", "guest", "image_url", "room_info"];
 
 // Property.hasMany(Room, {
