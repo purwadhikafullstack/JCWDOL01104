@@ -5,6 +5,10 @@ import User from "../models/user.js";
 import Location from "../models/location.js";
 import fs from "fs";
 import Order from "../models/order.js";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const attributesChosen = ["id", "name", "description", "image_url", "categoryId"];
 
@@ -116,11 +120,11 @@ export const deletePropertyData = async (req, res) => {
       //Deleting Property Image
       const pathLength = process.env.SERVER_LINK.length;
       const path = property.dataValues.image_url.substring(pathLength + 1);
-
+ 
       fs.unlink(join(__dirname, `../public/${path}`), (err) => {
         if (err) console.log(err);
       });
-
+     
       //Deleting Room Images
       rooms.forEach((value) => {
         const pathLength = process.env.SERVER_LINK.length;
