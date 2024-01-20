@@ -14,7 +14,10 @@ export const postDisabledRoomData = (req, res) => {
 
     const { id } = req.params;
 
-    UnavailableRoom.create({ date: Date.parse(date), roomId: id });
+    const dateBigInt= Date.parse(date);
+    const dateUpdate = new Date(dateBigInt).setHours(14, 0, 0, 0);
+
+    UnavailableRoom.create({ date: dateUpdate, roomId: id });
 
     return res.status(211).send({ message: "Succesful disable on room" });
   } catch (err) {
@@ -33,6 +36,7 @@ export const getDisabledDates = async (req, res) => {
     const dateData = dateDataObj.map((value) => {
       const val = new Date();
       val.setTime(Number(value.date));
+      val.setHours(0,0,0,0);
       return val;
     });
     return res.status(212).send({
