@@ -144,12 +144,20 @@ export const deletePropertyData = async (req, res) => {
         });
       });
 
+      await FacilityList.destroy({
+        where: {
+          propertyId: id,
+        },
+      });
+      
       await Property.destroy({
         where: {
           id: id,
         },
         include: [{ model: Room, where: { propertyId: id } }],
       });
+
+ 
 
       return res.status(204).send({
         message: "Property Data Succesfully Deleted",
