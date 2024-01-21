@@ -7,7 +7,6 @@ import fs from "fs";
 import Order from "../models/order.js";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
-import Facilities from "../modules/facility/repositories.js";
 import FacilityList from "../models/facility-list.js";
 import { generateFacility } from "../helpers/helpers.js";
 
@@ -60,7 +59,7 @@ export const postPropertyData = async (req, res) => {
     if (!facilityInsertionResult) {
       throw new Error('Facility insertion failed.');
     }
-    
+
     return res.status(202).send({
       message: "Property Data Succesfully Posted",
       data: result,
