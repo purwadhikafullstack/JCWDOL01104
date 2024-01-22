@@ -155,6 +155,37 @@ export const getOccupancyData = async (req, res) => {
     const startOfDay = new Date(dateInMilis).setHours(0, 0, 0, 0);
     const endOfDay = new Date(dateInMilis).setHours(23, 59, 59, 999);
 
+    
+    // const date = BigInt(req.params.date);
+    // const dateInMilis = Number(date);
+    // console.log(dateInMilis)
+    // const utcDate = new Date(dateInMilis);
+    // console.log(utcDate)
+
+    // // Adjust the UTC date to the local time zone
+    // const localDate = new Date(
+    //   utcDate.getTime() + utcDate.getTimezoneOffset() * 60 * 1000
+    // );
+    // const localDateMillis = localDate.getTime();
+    // const startOfDay = new Date(
+    //   localDate.getFullYear(),
+    //   localDate.getMonth(),
+    //   localDate.getDate(),
+    //   0,
+    //   0,
+    //   0,
+    //   0
+    // ).getTime();
+    // const endOfDay = new Date(
+    //   localDate.getFullYear(),
+    //   localDate.getMonth(),
+    //   localDate.getDate(),
+    //   23,
+    //   59,
+    //   59,
+    //   999
+    // ).getTime();
+
     const result = await Property.findAll({
       attributes: ["id", "name"],
       where: { userId: userId },
@@ -184,7 +215,7 @@ export const getOccupancyData = async (req, res) => {
           where: {
             roomId: roomId,
             start_date: { [Op.lte]: date },
-            end_date: { [Op.gte]: date },
+            end_date: { [Op.gte]: date},
             status: "success",
           },
         });

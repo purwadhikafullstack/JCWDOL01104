@@ -13,10 +13,11 @@ export const addSpecialPrice = async (req, res) => {
     const propId = req.params.id;
     const { date } = req.body;
     const dateBigInt = Date.parse(date); // converting value to big int miliseconds
+    const dateUpdate = new Date(dateBigInt).setHours(14, 0, 0, 0);
     const special = await SpecialPrice.create({
       percentage: req.body?.percentage,
       price: req.body?.price,
-      date: dateBigInt,
+      date: dateUpdate,
       propertyId: propId,
     });
 

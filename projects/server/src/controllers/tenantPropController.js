@@ -7,6 +7,9 @@ import fs from "fs";
 import Order from "../models/order.js";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
+import FacilityList from "../models/facility-list.js";
+import { generateFacility } from "../helpers/helpers.js";
+
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -50,6 +53,12 @@ export const postPropertyData = async (req, res) => {
       userId: userId,
       locationId: propLocation.id,
     });
+
+    const facility = generateFacility(result.dataValues.id, categoryId);
+    const facilityInsertionResult = await FacilityList.bulkCreate(facility);
+    if (!facilityInsertionResult) {
+      throw new Error('Facility insertion failed.');
+    }
 
     return res.status(202).send({
       message: "Property Data Succesfully Posted",
@@ -135,12 +144,20 @@ export const deletePropertyData = async (req, res) => {
         });
       });
 
+      await FacilityList.destroy({
+        where: {
+          propertyId: id,
+        },
+      });
+      
       await Property.destroy({
         where: {
           id: id,
         },
         include: [{ model: Room, where: { propertyId: id } }],
       });
+
+ 
 
       return res.status(204).send({
         message: "Property Data Succesfully Deleted",
